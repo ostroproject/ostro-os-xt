@@ -1,0 +1,28 @@
+From e7f9422c96ae37a8f98c6b8e163ccddbfc44ff75 Mon Sep 17 00:00:00 2001
+From: Amarnath Valluri <amarnath.valluri@intel.com>
+Date: Fri, 8 Jul 2016 15:16:08 +0300
+Subject: [PATCH] Remove browser, mail from apllications menu
+
+Upstream-Status: Inappropriate
+
+Signed-off-by: Amarnath Valluri <amarnath.valluri@intel.com>
+---
+ data/xfce/xfce-applications.menu | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/data/xfce/xfce-applications.menu b/data/xfce/xfce-applications.menu
+index dc3056b..d4336e1 100644
+--- a/data/xfce/xfce-applications.menu
++++ b/data/xfce/xfce-applications.menu
+@@ -17,8 +17,6 @@
+         <Separator/>
+         <Filename>exo-terminal-emulator.desktop</Filename>
+         <Filename>exo-file-manager.desktop</Filename>
+-        <Filename>exo-mail-reader.desktop</Filename>
+-        <Filename>exo-web-browser.desktop</Filename>
+         <Separator/>
+         <Menuname>Settings</Menuname>
+         <Separator/>
+-- 
+2.5.0
+

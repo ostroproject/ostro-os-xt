@@ -1,0 +1,2 @@
+# Template settings (relative to OEROOT)
+TEMPLATECONF=${TEMPLATECONF:-../meta-ostro-xt/conf}

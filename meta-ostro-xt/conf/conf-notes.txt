@@ -1,0 +1,17 @@
+Ostro OS XT common targets are:
+    ostro-xt-image-noswupd (when building without swupd,
+                            the recommended mode for local image building)
+    ostro-xt-image-swupd   (when building with swupd, the recommended mode
+                            for deployment)
+
+These are full-featured images with most components pre-installed. The
+development packages (header files, etc.) and build tools (compiler,
+autotools, etc.) are also part of the images, making them suitable for
+on-target compilation.
+
+In addition, images from Ostro OS also work:
+    ostro-image-noswupd (This is a minimal Ostro OS image with fewer components
+                         than ostro-xt-image-noswupd. Because of its reduced
+                         build time, it is especially recommended for people
+                         working on the core OS and kernel using the Yocto Project
+                         build tools. It is not suitable for on-target development.)

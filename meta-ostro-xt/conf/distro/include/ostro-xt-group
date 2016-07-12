@@ -1,0 +1,4 @@
+avahi:x:2000:
+avahi-autoipd:x:2001:
+lpadmin:x:2002:
+polkitd:x:2003:

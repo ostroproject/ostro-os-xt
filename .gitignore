@@ -1,0 +1,6 @@
+*.swp
+build
+buildhistory
+bitbake*.log
+ostroproject_ci_vars
+*.testinfo.csv

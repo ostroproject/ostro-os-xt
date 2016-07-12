@@ -1,0 +1,3 @@
+avahi:x:2000:2000::/var/run/avahi-daemon:/bin/false
+avahi-autoipd:x:2001:2001:::
+polkitd:x:2003:2003::/etc/polkit-1:/bin/sh

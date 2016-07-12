@@ -1,0 +1,48 @@
+From b8cde658f3a8ba98a0921855b0c2ba9e5b865de8 Mon Sep 17 00:00:00 2001
+From: Amarnath Valluri <amarnath.valluri@intel.com>
+Date: Fri, 8 Jul 2016 15:38:53 +0300
+Subject: [PATCH] Remove stale icons from panel
+
+- Web browser
+- Appfinder
+
+Upstream-status: Inappropriate
+
+Signed-off-by: Amarnath Valluri <amarnath.valluri@intel.com>
+---
+ migrate/default.xml.in | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/migrate/default.xml.in b/migrate/default.xml.in
+index 6b61479..67b5a98 100644
+--- a/migrate/default.xml.in
++++ b/migrate/default.xml.in
+@@ -28,8 +28,6 @@
+         <value type="int" value="8"/>
+         <value type="int" value="9"/>
+         <value type="int" value="10"/>
+-        <value type="int" value="11"/>
+-        <value type="int" value="12"/>
+         <value type="int" value="13"/>
+         <value type="int" value="14"/>
+       </property>
+@@ -58,16 +56,6 @@
+         <value type="string" value="exo-file-manager.desktop"/>
+       </property>
+     </property>
+-    <property name="plugin-11" type="string" value="launcher">
+-      <property name="items" type="array">
+-        <value type="string" value="exo-web-browser.desktop"/>
+-      </property>
+-    </property>
+-    <property name="plugin-12" type="string" value="launcher">
+-      <property name="items" type="array">
+-        <value type="string" value="xfce4-appfinder.desktop"/>
+-      </property>
+-    </property>
+     <property name="plugin-13" type="string" value="separator"/>
+     <property name="plugin-14" type="string" value="directorymenu"/>
+   </property>
+-- 
+2.5.0
+

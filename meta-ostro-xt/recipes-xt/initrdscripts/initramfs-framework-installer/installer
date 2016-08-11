@@ -25,7 +25,7 @@ installer_run() {
     read_settings
 
     # Wait until kernel spits out all pending messages
-    sleep 2
+    sleep 1
 
     if [ "xno" = "x${SETTINGS_INTERACTIVE}" ]; then
         install_onto_emmc
@@ -169,6 +169,21 @@ read_settings() {
     while [ ! -b $SRC_PARTITION ]; do
         echo "Waiting for installation media is fully initialized..."
         sleep 1
+    done
+
+    sleep 1
+    # Check if both SD-card and USB-stick are plugged in
+    while [ -b /dev/mmcblk0 -a -b /dev/mmcblk1 -a -b /dev/sda ]; do
+	# Check if there are two installation media plugged in.
+	local mmc0=`sgdisk -i 3 /dev/mmcblk0 |grep "Partition unique GUID"`
+	local mmc1=`sgdisk -i 3 /dev/mmcblk1 |grep "Partition unique GUID"`
+	local sda=`sgdisk -i 3 /dev/sda |grep "Partition unique GUID"`
+	if [ "x$mmc0" = "x$sda" -o "x$mmc1" = "x$sda" ]; then
+	    echo "ERROR: Detected two installation media plugged in. Unplug one of them"
+	    sleep 1
+	else
+	    break
+        fi
     done
 
     # USB and SD disks use different naming schemes for their partitions,

@@ -12,11 +12,13 @@
 # more details.
 
 create_remote_dirs () {
+        _base=$1
+        _dir=$2
         tmp_dir=`mktemp -d`
         pushd $tmp_dir
-        echo "create dirs: $*"
-        mkdir -p $*
-        rsync -aE --ignore-existing --chmod=D755 ./ ${_RSYNC_DEST}
+        echo "on base: ${_base} create dir: ${_dir}"
+        mkdir -p ${_dir}
+        rsync -aE --ignore-existing --chmod=D755 ./ ${_base}/
         popd
         rm -fr $tmp_dir
 }
@@ -58,10 +60,11 @@ _BRESULT=tmp-glibc
 _DEPL=${_BRESULT}/deploy
 
 # create publishing destination structure and copy
-[ -d ${_DEPL}/images ] && create_remote_dirs images && rsync --stats -aES --exclude=README_-_DO_NOT_DELETE_FILES_IN_THIS_DIRECTORY.txt ${_DEPL}/images/${TARGET_MACHINE} ${_RSYNC_DEST}/images/
-[ -d ${_DEPL}/licenses ] && create_remote_dirs licenses && rsync --stats -aE --ignore-existing ${_DEPL}/licenses ${_RSYNC_DEST}/
-[ -d ${_DEPL}/sources ] && create_remote_dirs sources && rsync --stats -aE --ignore-existing ${_DEPL}/sources ${_RSYNC_DEST}/
-[ -d ${_DEPL}/tools ] && create_remote_dirs tools && rsync --stats -aE --ignore-existing ${_DEPL}/tools ${_RSYNC_DEST}/
+create_remote_dirs ${RSYNC_PUBLISH_DIR}/builds ${JOB_NAME}/${CI_BUILD_ID}
+[ -d ${_DEPL}/images ] && create_remote_dirs ${_RSYNC_DEST} images && rsync --stats -aES --exclude=README_-_DO_NOT_DELETE_FILES_IN_THIS_DIRECTORY.txt ${_DEPL}/images/${TARGET_MACHINE} ${_RSYNC_DEST}/images/
+[ -d ${_DEPL}/licenses ] && create_remote_dirs ${_RSYNC_DEST} licenses && rsync --stats -aE --ignore-existing ${_DEPL}/licenses ${_RSYNC_DEST}/
+[ -d ${_DEPL}/sources ] && create_remote_dirs ${_RSYNC_DEST} sources && rsync --stats -aE --ignore-existing ${_DEPL}/sources ${_RSYNC_DEST}/
+[ -d ${_DEPL}/tools ] && create_remote_dirs ${_RSYNC_DEST} tools && rsync --stats -aE --ignore-existing ${_DEPL}/tools ${_RSYNC_DEST}/
 
 # If produced, publish swupd repo to build directory.
 # It will be published to real update location during build finalize steps
@@ -86,20 +89,20 @@ if [ -d ${_DEPL}/sdk ]; then
     # note: script name is dynamic, use it via wildard. NB! works while there is only one sdk/*-toolchain-ext*.sh
     ${WORKSPACE}/${BASE_DISTRO}/scripts/oe-publish-sdk ${_DEPL}/sdk/*-toolchain-ext*.sh ${_DEPL}/sdk-data/${TARGET_MACHINE}/
     # publish installer as .sh file to sdk/ and all of sdk-data/
-    create_remote_dirs sdk/${TARGET_MACHINE}
+    create_remote_dirs ${_RSYNC_DEST} sdk/${TARGET_MACHINE}
     rsync --stats -aE ${_DEPL}/sdk/*.sh ${_RSYNC_DEST}/sdk/${TARGET_MACHINE}/
 fi
 if [ -d ${_DEPL}/sdk-data/${TARGET_MACHINE} ]; then
-    create_remote_dirs sdk-data
+    create_remote_dirs ${_RSYNC_DEST} sdk-data
     rsync --stats -aE ${_DEPL}/sdk-data/${TARGET_MACHINE} ${_RSYNC_DEST}/sdk-data/
 fi
 if [ -d ${_DEPL}/testsuite ]; then
-    create_remote_dirs testsuite/${TARGET_MACHINE}
+    create_remote_dirs ${_RSYNC_DEST} testsuite/${TARGET_MACHINE}
     rsync --stats -aE ${_DEPL}/testsuite/* ${_RSYNC_DEST}/testsuite/${TARGET_MACHINE}/
 fi
 # publish isafw reports
 if [ -n "$(find ${_BRESULT}/log -maxdepth 1 -name 'isafw*' -print -quit)" ]; then
-    create_remote_dirs isafw/${TARGET_MACHINE}/
+    create_remote_dirs ${_RSYNC_DEST} isafw/${TARGET_MACHINE}/
     rsync --stats -aE ${_BRESULT}/log/isafw-report*/* ${_RSYNC_DEST}/isafw/${TARGET_MACHINE}/ --exclude internal
 fi
 
@@ -122,15 +125,15 @@ fi
 
 ## for debugging signatures: publish stamps
 if [ -d ${_BRESULT}/stamps ]; then
-    create_remote_dirs .stamps/${TARGET_MACHINE}/
+    create_remote_dirs ${_RSYNC_DEST} .stamps/${TARGET_MACHINE}/
     rsync --stats -aE ${_BRESULT}/stamps/* ${_RSYNC_DEST}/.stamps/${TARGET_MACHINE}/
 fi
 if [ -d ${_BRESULT}/buildstats ]; then
-    create_remote_dirs .buildstats/${TARGET_MACHINE}
+    create_remote_dirs ${_RSYNC_DEST} .buildstats/${TARGET_MACHINE}
     rsync --stats -aE ${_BRESULT}/buildstats/* ${_RSYNC_DEST}/.buildstats/${TARGET_MACHINE}/
 fi
 # Copy detailed build logs
-create_remote_dirs detailed-logs/${TARGET_MACHINE}/
+create_remote_dirs ${_RSYNC_DEST} detailed-logs/${TARGET_MACHINE}/
 rsync -qzr --prune-empty-dirs --include "log.*" --include "*/" --exclude "*" ${_BRESULT}/work*/* ${_RSYNC_DEST}/detailed-logs/${TARGET_MACHINE}/
 
 # Create latest symlink locally and rsync it to parent dir of publish dir

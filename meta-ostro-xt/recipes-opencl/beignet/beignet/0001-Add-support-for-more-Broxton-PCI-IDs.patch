@@ -1,27 +1,30 @@
-From 9d27b530498560376a4ef3aef5214cbc21c36c05 Mon Sep 17 00:00:00 2001
-From: Ross Burton <ross.burton@intel.com>
-Date: Tue, 7 Jun 2016 15:13:59 +0100
+From 09e20afa2740d35af5fb3dfda8a95567c59f2a8c Mon Sep 17 00:00:00 2001
+From: Jussi Laako <jussi.laako@linux.intel.com>
+Date: Mon, 15 Aug 2016 16:57:29 +0300
 Subject: [PATCH] Add support for more Broxton PCI IDs
 
 Upstream-Status: Inappropriate [the added IDs are not public]
 
+Author: Ross Burton <ross.burton@intel.com>
 ---
- src/cl_device_data.h | 17 ++++++++++++-----
- src/cl_device_id.c   |  6 +++++-
- 2 files changed, 17 insertions(+), 6 deletions(-)
+ src/cl_device_data.h | 19 ++++++++++++-------
+ src/cl_device_id.c   |  6 ++++++
+ 2 files changed, 18 insertions(+), 7 deletions(-)
 
 diff --git a/src/cl_device_data.h b/src/cl_device_data.h
-index f789feb..92321e1 100644
+index 30366ea..4076046 100644
 --- a/src/cl_device_data.h
 +++ b/src/cl_device_data.h
-@@ -297,12 +297,19 @@
+@@ -297,12 +297,18 @@
  #define IS_SKYLAKE(devid) (IS_SKL_GT1(devid) || IS_SKL_GT2(devid) || IS_SKL_GT3(devid) || IS_SKL_GT4(devid))
  
  /* BXT */
 -#define PCI_CHIP_BROXTON_P	0x5A84   /* Intel(R) BXT-P for mobile desktop */
+-#define PCI_CHIP_BROXTON_1	0x5A85
 -
 -#define IS_BROXTON(devid)               \
--  (devid == PCI_CHIP_BROXTON_P)
+-  (devid == PCI_CHIP_BROXTON_P ||       \
+-   devid == PCI_CHIP_BROXTON_1)
 +#define PCI_CHIP_BROXTON_0  0x0A84
 +#define PCI_CHIP_BROXTON_1  0x1A84
 +#define PCI_CHIP_BROXTON_P  0x5A84   /* Intel(R) BXT-P for mobile desktop */
@@ -35,31 +38,30 @@ index f789feb..92321e1 100644
 +   devid == PCI_CHIP_BROXTON_2 || \
 +   devid == PCI_CHIP_BROXTON_3)
  
- #define IS_GEN9(devid)      (IS_SKYLAKE(devid) || IS_BROXTON(devid))
+ #define PCI_CHIP_KABYLAKE_ULT_GT1     0x5906
+ #define PCI_CHIP_KABYLAKE_ULT_GT2     0x5916
+@@ -360,4 +366,3 @@
+ #define IS_GEN9(devid)     (IS_SKYLAKE(devid) || IS_BROXTON(devid) || IS_KABYLAKE(devid))
  
  #endif /* __CL_DEVICE_DATA_H__ */
 -
 diff --git a/src/cl_device_id.c b/src/cl_device_id.c
-index 00d014b..56f68e9 100644
+index df3355c..aacc9f9 100644
 --- a/src/cl_device_id.c
 +++ b/src/cl_device_id.c
-@@ -569,6 +569,11 @@ skl_gt4_break:
+@@ -615,6 +615,12 @@ skl_gt4_break:
        cl_intel_platform_enable_extension(ret, cl_khr_fp16_ext_id);
        break;
  
 +    case PCI_CHIP_BROXTON_0:
 +    case PCI_CHIP_BROXTON_1:
++    case PCI_CHIP_BROXTON_P:
 +    case PCI_CHIP_BROXTON_2:
 +    case PCI_CHIP_BROXTON_3:
 +      DECL_INFO_STRING(bxt_break, intel_bxt_device, name, "Intel(R) HD Graphics Broxton");
      case PCI_CHIP_BROXTON_P:
        DECL_INFO_STRING(bxt_break, intel_bxt_device, name, "Intel(R) HD Graphics Broxton-P");
  bxt_break:
-@@ -1087,4 +1092,3 @@ cl_get_kernel_workgroup_info(cl_kernel kernel,
- error:
-   return err;
- }
--
 -- 
-2.8.0.rc3
+2.9.3
 

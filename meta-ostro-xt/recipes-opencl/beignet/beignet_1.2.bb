@@ -2,18 +2,17 @@ LICENSE = "LGPLv2.1+"
 LIC_FILES_CHKSUM = "file://COPYING;md5=6b566c5b4da35d474758324899cb4562"
 
 SRC_URI = "git://anongit.freedesktop.org/beignet \
-           file://respect-cflags.patch \
            file://fix-llvm-paths.patch \
-           file://0001-Add-support-for-more-Broxton-PCI-IDs.patch \
            "
+# add-ID's patch is broken to begin with...
+#SRC_URI_append = " file://0001-Add-support-for-more-Broxton-PCI-IDs.patch"
 SRC_URI_append_class-native = " file://reduced-native.patch"
 SRC_URI_append_class-target = " file://0001-Run-native-gbe_bin_generater-to-compile-built-in-ker.patch"
 
 BBCLASSEXTEND = "native"
-# TODO set PV to reflect that this is 1.1.2+patches.
+# TODO set PV to reflect that this is 1.2+patches.
 
-# Need a newer srcrev as 1.1.2 won't build with the LLVM release in meta-clang
-SRCREV = "8dfec54e2f3e32710702ed60f5171741360f28bb"
+SRCREV = "2c1f2468b82d855bc0b2ec08ddb7280790067e48"
 S = "${WORKDIR}/git"
 
 PROVIDES += "virtual/opencl-headers virtual/opencl-headers-cxx"

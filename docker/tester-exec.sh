@@ -13,9 +13,6 @@
 # more details.
 #
 
-# XXX hard-codes for initial ramp-up
-WORKSPACE=`pwd`
-
 # function to test one image, see call point below.
 testimg() {
   _IMG_NAME=$1
@@ -31,7 +28,7 @@ testimg() {
   tar -xzf ${TEST_SUITE_FILE}
   tar -xzf ${TEST_CASES_FILE} -C iottest/
   # Copy local WLAN settings to iottest over example file and chmod to readable
-  _WLANCONF=${WORKSPACE}/iottest/oeqa/runtime/sanity/files/config.ini
+  _WLANCONF=./iottest/oeqa/runtime/sanity/files/config.ini
   cp /home/tester/.config.ini.wlan ${_WLANCONF}
   chmod 644 ${_WLANCONF}
 
@@ -111,13 +108,7 @@ testimg() {
 
 _WGET_OPTS="--no-verbose --no-proxy"
 
-if [ -v CI_BUILD_URL ]; then
-  DIR_FULL_URL="$CI_BUILD_URL"
-elif [ -v PUBLISH_DIR -a -v COORD_BASE_URL ]; then
-  # strip '/srv/' from head of PUBLISH_DIR
-  _PDIR=$(echo ${PUBLISH_DIR} | sed 's/\/srv\///')
-  DIR_FULL_URL="${COORD_BASE_URL}/${_PDIR}/${CI_BUILD_ID}"
-fi
+DIR_FULL_URL="$CI_BUILD_URL"
 TEST_SUITE_FOLDER_URL="${DIR_FULL_URL}/testsuite/${MACHINE}/"
 
 # process csv file given to tester job by toplevel job, contains image and testsuite information
@@ -125,11 +116,3 @@ while IFS=, read _img _tsuite _tdata _mach
 do
   [ "${_mach}" = "${MACHINE}" ] && testimg ${_img} ${_tsuite} ${_tdata}
 done < testinfo.csv
-
-# due to cleanup-related problems, lets delete big image files right here
-# making disk filling slower.
-# Note, this is not reached if script breaks earlier, we need exit handler
-# to do it properly, but this is temporary workaround anyway.
-set +e
-_prfx=ostro-image
-rm -f ${_prfx}*.dsk ${_prfx}*.bz2 ${_prfx}*.ext4

@@ -210,3 +210,4 @@ xset@core
 xterm@openembedded-layer
 xtrans@core
 hdmi-hotplug@ostro-xt
+curl@ostro-xt

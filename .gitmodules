@@ -4,5 +4,5 @@
 	branch = master
 [submodule "meta-clang"]
 	path = meta-clang
-	url = https://github.com/kraj/meta-clang
+	url = https://github.com/mythi/meta-clang
 	branch = krogoth

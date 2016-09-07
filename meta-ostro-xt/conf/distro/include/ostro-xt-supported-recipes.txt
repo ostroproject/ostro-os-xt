@@ -59,6 +59,7 @@ libeigen@openembedded-layer
 libepoxy@core
 liberation-fonts@core
 libevdev@core
+libevent@core
 libexif@core
 libfontenc@core
 libglu@core
@@ -106,6 +107,7 @@ libxpm@core
 libxrandr@core
 libxrender@core
 libxres@core
+libxscrnsaver@core
 libxt@core
 libxtst@core
 libxv@core
@@ -126,6 +128,7 @@ mtdev@core
 mtools@core
 node-inspector@ostro-xt
 nspr@core
+nss@core
 ocl-icd@ostro-xt
 opencl-headers@ostro-xt
 opencl-headers-cxx@ostro-xt

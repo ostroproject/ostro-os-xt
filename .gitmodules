@@ -6,3 +6,6 @@
 	path = meta-clang
 	url = https://github.com/kraj/meta-clang
 	branch = krogoth
+[submodule "meta-intel-realsense"]
+	path = meta-intel-realsense
+	url = https://github.com/IntelRealSense/meta-intel-realsense

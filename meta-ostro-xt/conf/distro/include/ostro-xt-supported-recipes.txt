@@ -1,5 +1,7 @@
 adwaita-icon-theme@core
 alsa-lib@core
+apr-util@core
+apr@core
 at-spi2-atk@core
 at-spi2-core@core
 atk@core
@@ -27,7 +29,7 @@ fwts@openembedded-layer
 garcon@xfce-layer
 gconf@core
 gdk-pixbuf@core
-glfw@ostro-xt
+glfw@realsense
 glib-networking@core
 glmark2@openembedded-layer
 glproto@core
@@ -36,6 +38,7 @@ gstreamer-vaapi-1.0@intel
 gstreamer1.0-plugins-base@core
 gstreamer1.0-plugins-good@core
 gstreamer1.0@core
+gtest@openembedded-layer
 gtk-xfce-engine@xfce-layer
 gtk\+3@core
 gtk\+@core
@@ -68,7 +71,7 @@ libogg@core
 libpciaccess@core
 libpng12@core
 libpthread-stubs@core
-librealsense@ostro-xt
+librealsense@realsense
 libsdl@core
 libsecret@core
 libsm@core
@@ -111,6 +114,7 @@ libxxf86dga@core
 libxxf86misc@core
 libxxf86vm@core
 lmbench@openembedded-layer
+log4cxx@realsense
 ltp@core
 machine-host@xfce-layer
 memtester@openembedded-layer
@@ -138,6 +142,11 @@ python-nose@core
 python-numpy@core
 python3@core
 randrproto@core
+realsense-sdk@realsense
+realsense-projectionopt@realsense
+realsense-objectrecognition@realsense
+realsense-slam@realsense
+realsense-persontracking@realsense
 recordproto@core
 renderproto@core
 resourceproto@core

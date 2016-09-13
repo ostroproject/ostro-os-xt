@@ -118,7 +118,7 @@ log4cxx@realsense
 ltp@core
 machine-host@xfce-layer
 memtester@openembedded-layer
-mesa@core
+mesa@ostro-xt
 mkfontdir@core
 mkfontscale@core
 mozjs@openembedded-layer

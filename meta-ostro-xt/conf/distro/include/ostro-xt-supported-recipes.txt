@@ -218,5 +218,5 @@ xserver-xorg@core
 xset@core
 xterm@openembedded-layer
 xtrans@core
-hdmi-hotplug@ostro-xt
+joule-udev-rules@ostro-xt
 curl@ostro-xt

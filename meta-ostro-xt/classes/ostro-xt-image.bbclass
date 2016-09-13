@@ -63,5 +63,5 @@ IMAGE_INSTALL += "${IMAGE_INSTALL_THERMAL_DAEMON}"
 #    backport-iwlwifi \
 #"
 
-# add udev rule to handle HDMI display hotplug events
-IMAGE_INSTALL += "hdmi-hotplug"
+# add package of Joule hardware specific udev rules
+IMAGE_INSTALL += "joule-udev-rules"

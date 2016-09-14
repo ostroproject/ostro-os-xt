@@ -80,6 +80,8 @@ $ export WORKSPACE=$HOME/work/ostro-os-xt
 $ mkdir -p $WORKSPACE
 $ cd $WORKSPACE
 $ git clone --recursive https://github.com/ostroproject/ostro-os-xt .
+$ source ostro-init-build-env
+
 
 When Docker is configured properly and all project code is cloned and
 available locally, it's time to trigger a build. To do this run the

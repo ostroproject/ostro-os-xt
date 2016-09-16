@@ -48,6 +48,7 @@ hicolor-icon-theme@core
 iceauth@openembedded-layer
 initramfs-framework-installer@ostro-xt
 inputproto@core
+iptables-settings-xt@ostro-xt
 iso-codes@core
 kbproto@core
 libaio@core

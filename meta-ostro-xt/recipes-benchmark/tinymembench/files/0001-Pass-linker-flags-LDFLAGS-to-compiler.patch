@@ -1,0 +1,29 @@
+From 13eb823a18c52441fd8231537bf60e7dfdd23925 Mon Sep 17 00:00:00 2001
+From: Amarnath Valluri <amarnath.valluri@intel.com>
+Date: Tue, 4 Oct 2016 14:34:58 +0300
+Subject: [PATCH] Pass linker flags(LDFLAGS) to compiler
+
+Upstream-status:Submitted
+https://github.com/ssvb/tinymembench/pull/9/commits/13eb823a18c52441fd8231537bf60e7dfdd23925
+
+Signed-off-by: Amarnath Valluri <amarnath.valluri@intel.com>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 31ca60e..024a56f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -5,7 +5,7 @@ ifdef WINDIR
+ endif
+ 
+ tinymembench: main.c util.o util.h asm-opt.h version.h asm-opt.o x86-sse2.o arm-neon.o mips-32.o aarch64-asm.o
+-	${CC} -O2 ${CFLAGS} -o tinymembench main.c util.o asm-opt.o x86-sse2.o arm-neon.o mips-32.o aarch64-asm.o -lm
++	${CC} -O2 ${CFLAGS} ${LDFLAGS} -o tinymembench main.c util.o asm-opt.o x86-sse2.o arm-neon.o mips-32.o aarch64-asm.o -lm
+ 
+ util.o: util.c util.h
+ 	${CC} -O2 ${CFLAGS} -c util.c
+-- 
+2.5.0
+

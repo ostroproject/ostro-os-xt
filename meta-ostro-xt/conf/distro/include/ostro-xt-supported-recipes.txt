@@ -1,5 +1,7 @@
 adwaita-icon-theme@core
 alsa-lib@core
+alsa-state@core
+alsa-utils@core
 apr-util@core
 apr@core
 at-spi2-atk@core
@@ -24,6 +26,7 @@ exo@xfce-layer
 expect@core
 fbset-modes@openembedded-layer
 fixesproto@core
+flac@core
 font-util@core
 fontsproto@core
 formfactor@core
@@ -76,9 +79,11 @@ libpciaccess@core
 libpng12@core
 libpthread-stubs@core
 librealsense@realsense
+libsamplerate0@core
 libsdl@core
 libsecret@core
 libsm@core
+libsndfile1@core
 libsoup-2.4@core
 libtheora@core
 libva-intel-driver@intel

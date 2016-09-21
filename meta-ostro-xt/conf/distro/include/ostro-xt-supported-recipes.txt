@@ -65,6 +65,7 @@ libglu@core
 libgphoto2@openembedded-layer
 libgudev@core
 libice@core
+libidn@ostro-xt
 libnewt@core
 libnotify@core
 libogg@core

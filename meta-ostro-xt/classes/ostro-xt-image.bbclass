@@ -71,3 +71,4 @@ IMAGE_INSTALL += "joule-udev-rules"
 
 # alsa-utils should support udev
 PACKAGECONFIG_append_pn-alsa-utils = " udev"
+PACKAGECONFIG_append_pn-gstreamer1.0-plugins-good = " flac"

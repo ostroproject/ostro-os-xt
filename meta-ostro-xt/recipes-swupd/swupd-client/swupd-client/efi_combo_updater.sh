@@ -49,7 +49,21 @@ if [ $? -eq 0 ]; then
 fi
 echo "Upgrading the EFI combo application."
 
+# For now copy the EFI combo to both partitions.
+# The EFI BIOS seems to ignore the fact that the 
+# 1st partition sometimes is not marked as EF00
+# This might be a bug in the Joule BIOS.
+
 umount ${TMP_PATH} &> /dev/null
+# Extra copy into the active partition.
+mount ${EFI_PARTITION_FULL_PATH} ${TMP_PATH} &> /dev/null
+rm -f ${EFI_APP_FULL_PATH}
+sync
+cp -a ${REFERENCE_EFI_APP_FULL_PATH} ${EFI_APP_FULL_PATH} &> /dev/null
+sync
+umount ${TMP_PATH} &> /dev/null
+sync
+#End of the extra step.
 mount ${EFI_BACKUP_PARTITION_FULL_PATH} ${TMP_PATH} &> /dev/null
 rm -f ${EFI_APP_FULL_PATH}
 sync

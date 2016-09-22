@@ -13,7 +13,7 @@ GIT_PROXY_COMMAND=oe-git-proxy
 TARGET_MACHINE="intel-corei7-64"
 
 BUILD_ARGS="--build-arg uid=`id -u`"
-RUN_ARGS="-u `id -u`"
+RUN_ARGS=(-u "`id -u`")
 
 safe_proxy_vars="HTTP_PROXY http_proxy HTTPS_PROXY https_proxy FTP_PROXY ftp_proxy NO_PROXY no_proxy ALL_PROXY socks_proxy SOCKS_PROXY"
 
@@ -22,7 +22,7 @@ for proxy in $safe_proxy_vars; do
         # strip spaces from values, if any.
         val="`echo ${!proxy} | tr -d ' '`"
         BUILD_ARGS="$BUILD_ARGS --build-arg $proxy=${val}"
-        RUN_ARGS="$RUN_ARGS -e $proxy=${!proxy}"
+        RUN_ARGS+=(-e "$proxy=${!proxy}")
     fi
 done
 
@@ -40,10 +40,10 @@ CI_BUILD_ID="${BUILD_TIMESTAMP}-build-${BUILD_NUMBER}"
 
 # export other vars
 for var in WORKSPACE BASE_DISTRO CURRENT_PROJECT BUILD_CACHE_DIR GIT_PROXY_COMMAND CI_BUILD_ID TARGET_MACHINE; do
-	RUN_ARGS="$RUN_ARGS -e $var=${!var}"
+	RUN_ARGS+=(-e "$var=${!var}")
 done
 # Point HOME to WORKSPACE, don't polute real home.
-RUN_ARGS="$RUN_ARGS -e HOME=$WORKSPACE"
+RUN_ARGS+=(-e "HOME=$WORKSPACE")
 
 docker build -t $CURRENT_PROJECT $BUILD_ARGS $WORKSPACE/docker/$BUILDOS
 
@@ -51,7 +51,7 @@ if [ ! -d $BUILD_CACHE_DIR ]; then
     mkdir -p $BUILD_CACHE_DIR
 fi
 
-docker run -it --rm $RUN_ARGS \
+docker run -it --rm "${RUN_ARGS[@]}" \
 	-v $BUILD_CACHE_DIR:$BUILD_CACHE_DIR:rw \
 	-v $WORKSPACE:$WORKSPACE:rw \
 	-w $WORKSPACE \

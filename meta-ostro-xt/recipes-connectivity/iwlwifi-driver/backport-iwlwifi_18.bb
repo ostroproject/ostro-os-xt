@@ -51,7 +51,7 @@ FILES_${PN} = "/lib/modules/${KERNVER}/updates/cfg80211.ko \
 
 EXTRA_OEMAKE = "INSTALL_MOD_PATH=${D} KLIB_BUILD=${KBUILD_OUTPUT}"
 
-do_configure() {
+do_compile_prepend() {
       CC=gcc CFLAGS= LDFLAGS= make defconfig-iwlwifi-public KLIB_BUILD=${KBUILD_OUTPUT}
 }
 

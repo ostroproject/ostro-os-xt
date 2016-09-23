@@ -1,0 +1,44 @@
+From 9824c3bed4676c9a17adbfc8178d7f3e96c60670 Mon Sep 17 00:00:00 2001
+From: Amarnath Valluri <amarnath.valluri@intel.com>
+Date: Mon, 26 Sep 2016 13:35:54 +0300
+Subject: [PATCH] Added configure option(--enable/disable-doc) for manpage
+ generation.
+
+This allows to build without documentation even in case of asccidoc,a2x,xmlto
+tools availabe.
+
+Upstream-Status: Inappropriate[embedded-specific]
+
+Signed-off-by: Amarnath Valluri <amarnath.valluri@intel.com>
+---
+ configure.ac | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 264d6e0..eb54bb2 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -30,9 +30,17 @@ AC_PROG_INSTALL
+ AC_PROG_LN_S
+ AM_PROG_CC_C_O
+ 
+-AC_PATH_PROG([ASCIIDOC], [asciidoc], [])
+-AC_PATH_PROG([A2X], [a2x], [])
+-AC_PATH_PROG([XMLTO], [xmlto], [])
++AC_ARG_ENABLE([doc],
++  [AS_HELP_STRING([--enable-doc],
++               [Generate documentation])],
++  [generate_doc=$enableval],
++  [generate_doc=no])
++
++if test "x$generate_doc" = "xyes"; then
++  AC_PATH_PROG([ASCIIDOC], [asciidoc], [])
++  AC_PATH_PROG([A2X], [a2x], [])
++  AC_PATH_PROG([XMLTO], [xmlto], [])
++fi
+ AM_CONDITIONAL([GEN_DOC], [\
+ 	test x"$ASCIIDOC" != x && \
+ 	test x"$A2X" != x && \
+-- 
+2.5.0
+

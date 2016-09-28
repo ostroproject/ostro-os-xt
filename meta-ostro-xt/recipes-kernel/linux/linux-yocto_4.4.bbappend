@@ -2,6 +2,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 SRC_URI_prepend_intel-corei7-64 = "file://fix_branch.scc "
 SRC_URI_append_intel-corei7-64 = " file://disable-iwlwifi-upstream.cfg"
+SRC_URI_append_intel-corei7-64 = " file://bxt-audio.cfg"
 
 LINUX_VERSION_INTEL_COMMON_forcevariable = "4.4.26"
 KBRANCH_corei7-64-intel-common_forcevariable = "standard/intel/bxt-rebase;rebaseable=1"

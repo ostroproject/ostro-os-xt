@@ -67,7 +67,3 @@ IMAGE_INSTALL += "${IMAGE_INSTALL_THERMAL_DAEMON}"
 
 # add package of Joule hardware specific udev rules
 IMAGE_INSTALL += "joule-udev-rules"
-
-# alsa-utils should support udev
-PACKAGECONFIG_append_pn-alsa-utils = " udev"
-PACKAGECONFIG_append_pn-gstreamer1.0-plugins-good = " flac"

@@ -55,5 +55,5 @@ docker run -it --rm $RUN_ARGS \
 	-v $BUILD_CACHE_DIR:$BUILD_CACHE_DIR:rw \
 	-v $WORKSPACE:$WORKSPACE:rw \
 	-w $WORKSPACE \
-	$CURRENT_PROJECT $WORKSPACE/docker/build-project.sh
+	$CURRENT_PROJECT $WORKSPACE/docker/build-project.sh "$@"
 

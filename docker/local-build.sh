@@ -7,7 +7,8 @@ fi
 
 BASE_DISTRO=ostro-os
 CURRENT_PROJECT=ostro-os-xt
-BUILD_CACHE_DIR=$WORKSPACE/bb-cache
+BUILD_DIR=${BUILD_DIR:-${WORKSPACE}/build}
+BUILD_CACHE_DIR=$BUILD_DIR/bb-cache
 BUILDOS="opensuse-42.1"
 GIT_PROXY_COMMAND=oe-git-proxy
 TARGET_MACHINE="intel-corei7-64"
@@ -39,7 +40,7 @@ echo "$BUILD_NUMBER" > $WORKSPACE/.build_number
 CI_BUILD_ID="${BUILD_TIMESTAMP}-build-${BUILD_NUMBER}"
 
 # export other vars
-for var in WORKSPACE BASE_DISTRO CURRENT_PROJECT BUILD_CACHE_DIR GIT_PROXY_COMMAND CI_BUILD_ID TARGET_MACHINE; do
+for var in WORKSPACE BASE_DISTRO BUILD_DIR BUILD_CACHE_DIR GIT_PROXY_COMMAND CI_BUILD_ID TARGET_MACHINE; do
 	RUN_ARGS+=(-e "$var=${!var}")
 done
 # Point HOME to WORKSPACE, don't polute real home.
@@ -52,6 +53,7 @@ if [ ! -d $BUILD_CACHE_DIR ]; then
 fi
 
 docker run -it --rm "${RUN_ARGS[@]}" \
+	-v $BUILD_DIR:$BUILD_DIR:rw \
 	-v $BUILD_CACHE_DIR:$BUILD_CACHE_DIR:rw \
 	-v $WORKSPACE:$WORKSPACE:rw \
 	-w $WORKSPACE \

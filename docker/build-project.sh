@@ -29,7 +29,7 @@ CI_GIT_COMMIT=$(git rev-parse HEAD)
 
 # FIXME: undbound variables used without checking:
 set +u
-source ostro-init-build-env
+source ostro-init-build-env $BUILD_DIR
 set -u
 
 if [ -v JOB_NAME ]; then

@@ -33,3 +33,8 @@ SRC_URI_remove = " \
     file://0001-iio-tmp006-Set-correct-iio-name.patch \
     file://0001-iio-si7020-Set-correct-iio-name.patch \
 "
+
+do_patch_prepend() {
+  export GIT_COMMITTER_NAME="${GIT_COMMITTER_NAME}"
+  export GIT_COMMITTER_EMAIL="${GIT_COMMITTER_EMAIL}"
+}

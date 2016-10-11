@@ -138,6 +138,7 @@ pointercal-xinput@core
 polkit@openembedded-layer
 presentproto@core
 protobuf@openembedded-layer
+python-mako@core
 python-nose@core
 python-numpy@core
 python3@core

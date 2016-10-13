@@ -17,6 +17,8 @@ set -o pipefail
 # FIXME: debug
 env | sort
 
+BUILD_TARGET="$@"
+
 # bitbake started to depend on a locale with UTF-8 support
 # when migrating to Python3.
 export LC_ALL=en_US.UTF-8
@@ -27,7 +29,7 @@ CI_GIT_COMMIT=$(git rev-parse HEAD)
 
 # FIXME: undbound variables used without checking:
 set +u
-source ostro-init-build-env
+source ostro-init-build-env $BUILD_DIR
 set -u
 
 if [ -v JOB_NAME ]; then
@@ -86,30 +88,34 @@ fi
 export BUILD_ID=${CI_BUILD_ID}
 export BB_ENV_EXTRAWHITE="$BB_ENV_EXTRAWHITE BUILD_ID"
 
-# Let's try to fetch build targets from configuration files
-bitbake -e >bb_e_out 2>bb_e_err || (cat bb_e_err && false)
-grep -E "^OSTROPROJECT_CI" bb_e_out > ${WORKSPACE}/ostroproject_ci_vars || true
-_bitbake_targets=""
-OSTROPROJECT_CI_BUILD_TARGETS_TASK=""
-OSTROPROJECT_CI_SDK_TARGETS_TASK="do_populate_sdk"
-OSTROPROJECT_CI_ESDK_TARGETS_TASK="do_populate_sdk_ext"
-OSTROPROJECT_CI_TEST_EXPORT_TARGETS_TASK="do_test_iot_export"
-for ci_var in `perl -pe "s/^([A-Z_]+)=.+/\1/g" ${WORKSPACE}/ostroproject_ci_vars`; do
-  ci_var_task="${ci_var}_TASK"
-  if [ -v "$ci_var_task" ]; then
-    for img in `grep ${ci_var} ${WORKSPACE}/ostroproject_ci_vars | perl -pe 's/.+="(.*)"/\1/g; s/[^ a-zA-Z0-9_-]//g'`; do
-      if [ -n "${!ci_var_task}" ]; then
-        _bitbake_targets="$_bitbake_targets $img:${!ci_var_task}"
-      else
-        _bitbake_targets="$_bitbake_targets $img"
-      fi
-    done
+if [ -z "$BUILD_TARGET" ]; then
+  # Let's try to fetch build targets from configuration files
+  bitbake -e >bb_e_out 2>bb_e_err || (cat bb_e_err && false)
+  grep -E "^OSTROPROJECT_CI" bb_e_out > ${WORKSPACE}/ostroproject_ci_vars || true
+  _bitbake_targets=""
+  OSTROPROJECT_CI_BUILD_TARGETS_TASK=""
+  OSTROPROJECT_CI_SDK_TARGETS_TASK="do_populate_sdk"
+  OSTROPROJECT_CI_ESDK_TARGETS_TASK="do_populate_sdk_ext"
+  OSTROPROJECT_CI_TEST_EXPORT_TARGETS_TASK="do_test_iot_export"
+  for ci_var in `perl -pe "s/^([A-Z_]+)=.+/\1/g" ${WORKSPACE}/ostroproject_ci_vars`; do
+    ci_var_task="${ci_var}_TASK"
+    if [ -v "$ci_var_task" ]; then
+      for img in `grep ${ci_var} ${WORKSPACE}/ostroproject_ci_vars | perl -pe 's/.+="(.*)"/\1/g; s/[^ a-zA-Z0-9_-]//g'`; do
+        if [ -n "${!ci_var_task}" ]; then
+          _bitbake_targets="$_bitbake_targets $img:${!ci_var_task}"
+        else
+          _bitbake_targets="$_bitbake_targets $img"
+        fi
+      done
+    fi
+  done
+  if [ -z "$_bitbake_targets" ]; then
+    # Autodetection failed.
+    echo "ERROR: can't detect build targets. Check that OSTROPROJECT_CI_*_TARGETS defined in your configs."
+    exit 1
   fi
-done
-if [ -z "$_bitbake_targets" ]; then
-  # Autodetection failed.
-  echo "ERROR: can't detect build targets. Check that OSTROPROJECT_CI_*_TARGETS defined in your configs."
-  exit 1
+else
+  _bitbake_targets="$BUILD_TARGET"
 fi
 
 if [ -v JOB_NAME ]; then 

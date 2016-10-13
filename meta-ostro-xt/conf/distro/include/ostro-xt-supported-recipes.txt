@@ -130,6 +130,7 @@ ocl-icd@ostro-xt
 opencl-headers@ostro-xt
 opencl-headers-cxx@ostro-xt
 opencv@openembedded-layer
+openssl@ostro-xt
 orc@core
 pango@core
 perf@core

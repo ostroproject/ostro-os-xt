@@ -1,0 +1,25 @@
+From 4e935ce57c64f6c5b49781b3a85efafdc6d914f8 Mon Sep 17 00:00:00 2001
+From: Dmitry Rozhkov <dmitry.rozhkov@linux.intel.com>
+Date: Fri, 14 Oct 2016 11:17:54 +0300
+Subject: [PATCH] Avoid dowinloading nose in build-time
+
+Signed-off-by: Dmitry Rozhkov <dmitry.rozhkov@linux.intel.com>
+---
+ setup.py | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/setup.py b/setup.py
+index 0f6950c..29ec647 100644
+--- a/setup.py
++++ b/setup.py
+@@ -9,7 +9,6 @@ setup(
+     packages=['rosdep2', 'rosdep2.platforms'],
+     package_dir={'': 'src'},
+     install_requires=['catkin_pkg', 'rospkg >= 1.0.37', 'rosdistro >= 0.4.0', 'PyYAML >= 3.1'],
+-    setup_requires=['nose >= 1.0'],
+     test_suite='nose.collector',
+     test_requires=['mock'],
+     scripts=['scripts/rosdep', 'scripts/rosdep-source'],
+-- 
+2.5.5
+

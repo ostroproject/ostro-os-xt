@@ -9,3 +9,6 @@
 [submodule "meta-intel-realsense"]
 	path = meta-intel-realsense
 	url = https://github.com/IntelRealSense/meta-intel-realsense
+[submodule "meta-ros"]
+	path = meta-ros
+	url = https://github.com/bmwcarit/meta-ros.git

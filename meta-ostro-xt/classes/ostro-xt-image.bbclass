@@ -17,6 +17,7 @@ OSTRO_XT_IMAGE_PKG_FEATURES = "\
     backport-iwlwifi \
     multimedia \
     realsense-sdk \
+    ros \
 "
 
 IMAGE_FEATURE[validitems] += " \
@@ -34,6 +35,7 @@ FEATURE_PACKAGES_xdk-daemon = "xdk-daemon"
 FEATURE_PACKAGES_backport-iwlwifi = "backport-iwlwifi"
 FEATURE_PACKAGES_multimedia = "packagegroup-multimedia"
 FEATURE_PACKAGES_realsense-sdk = "packagegroup-realsense"
+FEATURE_PACKAGES_ros = "packagegroup-ros-world"
 
 # By default, all Ostro OS XT images include the full set of software
 # provided by Ostro OS and Ostro OS XT (except for benchmarks and QA

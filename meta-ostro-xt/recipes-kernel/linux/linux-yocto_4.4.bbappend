@@ -3,12 +3,12 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 SRC_URI_prepend_intel-corei7-64 = "file://fix_branch.scc "
 SRC_URI_append_intel-corei7-64 = " file://disable-iwlwifi-upstream.cfg"
 
-LINUX_VERSION_INTEL_COMMON_forcevariable = "4.4.20"
+LINUX_VERSION_INTEL_COMMON_forcevariable = "4.4.22"
 KBRANCH_corei7-64-intel-common_forcevariable = "standard/intel/bxt-rebase;rebaseable=1"
 # http://git.yoctoproject.org/cgit/cgit.cgi/linux-yocto-4.4/log/?h=standard/intel/bxt-rebase
-SRCREV_machine_corei7-64-intel-common = "dea601591c75ab82fcdbad0902299cc6c3f84333"
+SRCREV_machine_corei7-64-intel-common = "f728f6dfbaef1d7c8aeebae24b774512f53cf955"
 # http://git.yoctoproject.org/cgit/cgit.cgi/yocto-kernel-cache/log/?h=yocto-4.4
-SRCREV_meta_corei7-64-intel-common = "59290c5f6192da2eccf478d37a8f9f88134822b3"
+SRCREV_meta_corei7-64-intel-common = "bbaf01752b0168a63b164978495fad4ead7e8972"
 
 # This feature was already removed from KERNEL_FEATURES_INTEL_COMMON
 # in meta-intel master (a4c1cfb53d192, linux-yocto*: remove mei from

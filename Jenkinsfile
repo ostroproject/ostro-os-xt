@@ -40,49 +40,51 @@ def testinfo_data = ""
 try {
     node('docker') {
         ws ("workspace/builder-slot-${env.EXECUTOR_NUMBER}") {
-            stage 'Cleanup workspace'
-            deleteDir()
+            stage('Cleanup workspace') {
+                deleteDir()
+            }
 
-            stage 'Checkout own content'
-            if (binding.variables.get("GITHUB_PR_NUMBER")) {
-                // we are building pull request
-                checkout([$class: 'GitSCM',
-                    branches: [
-                        [name: "origin-pull/$GITHUB_PR_NUMBER/$GITHUB_PR_COND_REF"]
-                    ],
-                    doGenerateSubmoduleConfigurations: false,
-                    extensions: [
-                        [$class: 'SubmoduleOption',
-                            disableSubmodules: false,
-                            recursiveSubmodules: true,
-                            reference: "${env.PUBLISH_DIR}/bb-cache/.git-mirror",
-                            trackingSubmodules: false],
-                        [$class: 'CleanBeforeCheckout']
-                    ],
-                    submoduleCfg: [],
-                        userRemoteConfigs: [
-                        [
-                            credentialsId: "${GITHUB_AUTH}",
-                            name: 'origin-pull',
-                            refspec: "+refs/pull/$GITHUB_PR_NUMBER/*:refs/remotes/origin-pull/$GITHUB_PR_NUMBER/*",
-                            url: "${GITHUB_PROJECT}"
+            stage('Checkout own content') {
+                if (binding.variables.get("GITHUB_PR_NUMBER")) {
+                    // we are building pull request
+                    checkout([$class: 'GitSCM',
+                        branches: [
+                            [name: "origin-pull/$GITHUB_PR_NUMBER/$GITHUB_PR_COND_REF"]
+                        ],
+                        doGenerateSubmoduleConfigurations: false,
+                        extensions: [
+                            [$class: 'SubmoduleOption',
+                                disableSubmodules: false,
+                                recursiveSubmodules: true,
+                                reference: "${env.PUBLISH_DIR}/bb-cache/.git-mirror",
+                                trackingSubmodules: false],
+                            [$class: 'CleanBeforeCheckout']
+                        ],
+                        submoduleCfg: [],
+                            userRemoteConfigs: [
+                            [
+                                credentialsId: "${GITHUB_AUTH}",
+                                name: 'origin-pull',
+                                refspec: "+refs/pull/$GITHUB_PR_NUMBER/*:refs/remotes/origin-pull/$GITHUB_PR_NUMBER/*",
+                                url: "${GITHUB_PROJECT}"
+                            ]
                         ]
-                    ]
-                ])
-            } else {
-                checkout poll: false, scm: scm
+                    ])
+                } else {
+                    checkout poll: false, scm: scm
+                }
             }
 
-            stage 'Build docker image'
-            if (is_pr) {
-                setGitHubPullRequestStatus state: 'PENDING', context: "${env.JOB_NAME}", message: "Building Docker image"
+            stage('Build docker image') {
+                if (is_pr) {
+                    setGitHubPullRequestStatus state: 'PENDING', context: "${env.JOB_NAME}", message: "Building Docker image"
+                }
+
+                def build_args = [ build_proxy_args(), build_user_args()].join(" ")
+
+                sh "docker build -t ${image_name} ${build_args} docker/${build_os}"
+                dockerFingerprintFrom dockerfile: "docker/${build_os}/Dockerfile", image: "${image_name}"
             }
-
-            def build_args = [ build_proxy_args(), build_user_args()].join(" ")
-
-            sh "docker build -t ${image_name} ${build_args} docker/${build_os}"
-            dockerFingerprintFrom dockerfile: "docker/${build_os}/Dockerfile", image: "${image_name}"
-
             def docker_image = docker.image(image_name)
 
             run_args = ["-v ${env.PUBLISH_DIR}:${env.PUBLISH_DIR}:rw",
@@ -105,21 +107,22 @@ try {
             timestamps {
             sshagent(['github-auth-ssh']) {
                 docker_image.inside(run_args) {
-                    stage 'Bitbake Build'
-                    if (is_pr) {
-                        setGitHubPullRequestStatus state: 'PENDING', context: "${env.JOB_NAME}", message: "Bitbake Build"
+                    stage('Bitbake Build') {
+                        if (is_pr) {
+                            setGitHubPullRequestStatus state: 'PENDING', context: "${env.JOB_NAME}", message: "Bitbake Build"
+                        }
+                        params = ["${script_env}",
+                        "docker/build-project.sh"].join("\n")
+                        sh "${params}"
                     }
-                    params = ["${script_env}",
-                    "docker/build-project.sh"].join("\n")
-                    sh "${params}"
-
-                    stage "Build publishing"
-                    if (is_pr) {
-                        setGitHubPullRequestStatus state: 'PENDING', context: "${env.JOB_NAME}", message: "Build publishing"
+                    stage('Build publishing') {
+                        if (is_pr) {
+                            setGitHubPullRequestStatus state: 'PENDING', context: "${env.JOB_NAME}", message: "Build publishing"
+                        }
+                        params =  ["${script_env}",
+                        "docker/publish-project.sh"].join("\n")
+                        sh "${params}"
                     }
-                    params =  ["${script_env}",
-                    "docker/publish-project.sh"].join("\n")
-                    sh "${params}"
                 }
             } // sshagent
             } // timestamps
@@ -181,9 +184,10 @@ try {
             }
         }
     }
-    stage "Parallel test run"
-    timestamps {
-        parallel test_runs
+    stage('Parallel test run') {
+        timestamps {
+            parallel test_runs
+        }
     }
 
     if (is_pr) {

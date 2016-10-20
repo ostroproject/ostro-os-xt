@@ -73,11 +73,6 @@ try {
                 checkout poll: false, scm: scm
             }
 
-            stage 'Cleanup old build directory'
-            dir('build') {
-                deleteDir()
-            }
-
             stage 'Build docker image'
             if (is_pr) {
                 setGitHubPullRequestStatus state: 'PENDING', context: "${env.JOB_NAME}", message: "Building Docker image"

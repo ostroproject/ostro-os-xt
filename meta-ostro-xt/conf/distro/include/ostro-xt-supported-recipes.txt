@@ -114,7 +114,7 @@ libxxf86dga@core
 libxxf86misc@core
 libxxf86vm@core
 lmbench@openembedded-layer
-log4cxx@realsense
+log4cxx@ostro-xt
 ltp@core
 machine-host@xfce-layer
 memtester@openembedded-layer

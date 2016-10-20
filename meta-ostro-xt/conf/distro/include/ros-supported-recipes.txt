@@ -100,7 +100,6 @@ libid3tag@core
 libsdl-image@openembedded-layer
 libsndfile1@core
 libtinyxml@openembedded-layer
-log4cxx@ros-layer
 lz4@core
 map-msgs@ros-layer
 map-server@ros-layer

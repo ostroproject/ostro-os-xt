@@ -192,7 +192,11 @@ try {
     }
 
     if (is_pr) {
-        setGitHubPullRequestStatus state: 'SUCCESS', context: "${env.JOB_NAME}", message: 'Build finished successfuly'
+        if (currentBuild.result == 'SUCCESS') {
+            setGitHubPullRequestStatus state: 'SUCCESS', context: "${env.JOB_NAME}", message: 'Build finished successfully'
+        } else {
+            setGitHubPullRequestStatus state: 'FAILURE', context: "${env.JOB_NAME}", message: "Build failed"
+        }
     }
 } catch (Exception e) {
     echo "Error: ${e}"

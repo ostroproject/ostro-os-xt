@@ -6,6 +6,8 @@ SRC_URI += " \
     file://sysfs-control.sh \
     file://pci-power.rules \
     file://hdmi-hotplug.rules \
+    file://usb-power.rules \
+    file://usb-autosuspend-blacklist \
 "
 
 do_install_append () {
@@ -14,5 +16,8 @@ do_install_append () {
     install -m 0755 -d ${D}/${base_libdir}/udev/rules.d
     install -m 0644 ${WORKDIR}/hdmi-hotplug.rules ${D}/${base_libdir}/udev/rules.d/79-hdmi-hotplug.rules
     install -m 0644 ${WORKDIR}/pci-power.rules ${D}/${base_libdir}/udev/rules.d/80-pci-power.rules
+    install -m 0644 ${WORKDIR}/usb-power.rules ${D}/${base_libdir}/udev/rules.d/80-usb-power.rules
+    install -m 0644 ${WORKDIR}/usb-autosuspend-blacklist ${D}/${base_libdir}/udev/
 }
 
+FILES_${PN} += "${base_libdir}/udev/usb-autosuspend-blacklist"

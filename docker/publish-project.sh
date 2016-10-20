@@ -113,7 +113,7 @@ if [ -f "${LOG}" ]; then
 fi
 
 if [ -d sstate-cache ]; then
-  if [ -v BUILD_CACHE_DIR ]; then
+  if [ ! -z ${BUILD_CACHE_DIR+x} ]; then
     if [ -d ${BUILD_CACHE_DIR}/sstate ]; then
       # populate shared sstate from local sstate:
       _src=sstate-cache

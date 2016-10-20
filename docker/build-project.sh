@@ -32,7 +32,7 @@ set +u
 source ostro-init-build-env $BUILD_DIR
 set -u
 
-if [ -v JOB_NAME ]; then
+if [ ! -z ${JOB_NAME+x} ]; then
   # Prepare for buildhistory generation
   # If JOB_NAME is defined, we commit buildhistory in
   # BH branch, name of which is composed from JOB_NAME and MACHINE.
@@ -70,11 +70,11 @@ if [ -n "$BUILD_CACHE_DIR" ]; then
 DL_DIR = "${BUILD_CACHE_DIR}/sources"
 EOF
 fi
-if [ -v JOB_NAME ]; then
+if [ ! -z ${JOB_NAME+x} ]; then
 	cat >> conf/auto.conf << EOF
 BUILDHISTORY_DIR ?= "${BUILDHISTORY_TMP}"
 EOF
-  if [ -v COORD_BASE_URL ]; then
+  if [ ! -z ${COORD_BASE_URL+x} ]; then
     # SSTATE over http
     echo "SSTATE_MIRRORS ?= \"file://.* ${COORD_BASE_URL}/bb-cache/sstate/PATH\"" >> conf/auto.conf
   else
@@ -93,21 +93,17 @@ if [ -z "$BUILD_TARGET" ]; then
   bitbake -e >bb_e_out 2>bb_e_err || (cat bb_e_err && false)
   grep -E "^OSTROPROJECT_CI" bb_e_out > ${WORKSPACE}/ostroproject_ci_vars || true
   _bitbake_targets=""
-  OSTROPROJECT_CI_BUILD_TARGETS_TASK=""
-  OSTROPROJECT_CI_SDK_TARGETS_TASK="do_populate_sdk"
-  OSTROPROJECT_CI_ESDK_TARGETS_TASK="do_populate_sdk_ext"
-  OSTROPROJECT_CI_TEST_EXPORT_TARGETS_TASK="do_test_iot_export"
   for ci_var in `perl -pe "s/^([A-Z_]+)=.+/\1/g" ${WORKSPACE}/ostroproject_ci_vars`; do
-    ci_var_task="${ci_var}_TASK"
-    if [ -v "$ci_var_task" ]; then
-      for img in `grep ${ci_var} ${WORKSPACE}/ostroproject_ci_vars | perl -pe 's/.+="(.*)"/\1/g; s/[^ a-zA-Z0-9_-]//g'`; do
-        if [ -n "${!ci_var_task}" ]; then
-          _bitbake_targets="$_bitbake_targets $img:${!ci_var_task}"
-        else
-          _bitbake_targets="$_bitbake_targets $img"
-        fi
-      done
-    fi
+    case "$ci_var" in
+    (OSTROPROJECT_CI_BUILD_TARGETS) _sufx="" ;;
+    (OSTROPROJECT_CI_SDK_TARGETS) _sufx=":do_populate_sdk" ;;
+    (OSTROPROJECT_CI_ESDK_TARGETS) _sufx=":do_populate_sdk_ext" ;;
+    (OSTROPROJECT_CI_TEST_EXPORT_TARGETS) _sufx=":do_test_iot_export" ;;
+    (*) continue;;
+    esac
+    for img in `grep ${ci_var} ${WORKSPACE}/ostroproject_ci_vars | perl -pe 's/.+="(.*)"/\1/g; s/[^ a-zA-Z0-9_-]//g'`; do
+      _bitbake_targets="$_bitbake_targets ${img}${_sufx}"
+    done
   done
   if [ -z "$_bitbake_targets" ]; then
     # Autodetection failed.
@@ -118,7 +114,7 @@ else
   _bitbake_targets="$BUILD_TARGET"
 fi
 
-if [ -v JOB_NAME ]; then 
+if [ ! -z ${JOB_NAME+x} ]; then
   # build inside CI, save log
   LOG=$WORKSPACE/bitbake-${TARGET_MACHINE}-${CI_BUILD_ID}.log
   bitbake ${_bitbake_targets} 2>&1 | tee -a $LOG
@@ -130,7 +126,7 @@ fi
 # ########################################
 # Push buildhistory into machine-specific branch in the master buildhistory
 #
-if [ -v JOB_NAME ]; then
+if [ ! -z ${JOB_NAME+x} ]; then
   cd ${BUILDHISTORY_TMP}
   BUILDHISTORY_TAG="${JOB_NAME}/${CI_BUILD_ID}/${CI_GIT_COMMIT}/${TARGET_MACHINE}"
   git tag -a -m "Build #${BUILD_NUMBER} (${BUILD_TIMESTAMP}) of ${JOB_NAME} for ${TARGET_MACHINE}" -m "Built from Git revision ${CI_GIT_COMMIT}" ${BUILDHISTORY_TAG} refs/heads/${BUILDHISTORY_BRANCH}

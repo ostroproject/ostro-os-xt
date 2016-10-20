@@ -19,11 +19,15 @@ RUN_ARGS=(-u "`id -u`")
 safe_proxy_vars="HTTP_PROXY http_proxy HTTPS_PROXY https_proxy FTP_PROXY ftp_proxy NO_PROXY no_proxy ALL_PROXY socks_proxy SOCKS_PROXY"
 
 for proxy in $safe_proxy_vars; do
-    if [ -v $proxy ]; then
+    # Use variable only if value defined.
+    # Note that this is different thing from variable defined empty
+    # Avoid use bash-specific [ -v var ] for portability
+    if [ "$(env|grep $proxy)" != "" ]; then
+        eval _proxyval=\$$proxy
         # strip spaces from values, if any.
-        val="`echo ${!proxy} | tr -d ' '`"
+        val="`echo ${_proxyval} | tr -d ' '`"
         BUILD_ARGS="$BUILD_ARGS --build-arg $proxy=${val}"
-        RUN_ARGS+=(-e "$proxy=${!proxy}")
+        RUN_ARGS+=(-e "$proxy=${_proxyval}")
     fi
 done
 

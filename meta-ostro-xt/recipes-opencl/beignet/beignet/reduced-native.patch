@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 0af63c1..bb3bb74 100644
+index d839f3f..b6912a2 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -120,78 +120,9 @@ ELSE(X11_FOUND)
+@@ -120,101 +120,11 @@ ELSE(X11_FOUND)
    MESSAGE(STATUS "Looking for XLib - not found")
  ENDIF(X11_FOUND)
  
@@ -15,27 +15,42 @@ index 0af63c1..bb3bb74 100644
 -  MESSAGE(STATUS "Looking for DRM - not found")
 -ENDIF(DRM_FOUND)
 -
+ include(CheckLibraryExists)
 -# DRM Intel
 -pkg_check_modules(DRM_INTEL libdrm_intel>=2.4.52)
 -IF(DRM_INTEL_FOUND)
 -  INCLUDE_DIRECTORIES(${DRM_INTEL_INCLUDE_DIRS})
 -  MESSAGE(STATUS "Looking for DRM Intel - found at ${DRM_INTEL_PREFIX} ${DRM_INTEL_VERSION}")
--  #userptr support starts from 2.4.57, but 2.4.58 is the actual stable release
--  IF(DRM_INTEL_VERSION VERSION_GREATER 2.4.57)
+-  CHECK_LIBRARY_EXISTS(drm_intel "drm_intel_bo_alloc_userptr" ${DRM_INTEL_LIBDIR} HAVE_DRM_INTEL_USERPTR)
+-  IF(HAVE_DRM_INTEL_USERPTR)
 -    MESSAGE(STATUS "Enable userptr support")
--    SET(DRM_INTEL_USERPTR "enable")
--  ELSE(DRM_INTEL_VERSION VERSION_GREATER 2.4.57)
+-  ELSE(HAVE_DRM_INTEL_USERPTR)
 -    MESSAGE(STATUS "Disable userptr support")
--  ENDIF(DRM_INTEL_VERSION VERSION_GREATER 2.4.57)
--  IF(DRM_INTEL_VERSION VERSION_GREATER 2.4.59)
+-  ENDIF(HAVE_DRM_INTEL_USERPTR)
+-  CHECK_LIBRARY_EXISTS(drm_intel "drm_intel_get_eu_total" ${DRM_INTEL_LIBDIR} HAVE_DRM_INTEL_EU_TOTAL)
+-  IF(HAVE_DRM_INTEL_EU_TOTAL)
 -    MESSAGE(STATUS "Enable EU total query support")
--    SET(DRM_INTEL_EU_TOTAL "enable")
--    MESSAGE(STATUS "Enable subslice total query support")
--    SET(DRM_INTEL_SUBSLICE_TOTAL "enable")
--  ELSE(DRM_INTEL_VERSION VERSION_GREATER 2.4.59)
+-  ELSE(HAVE_DRM_INTEL_EU_TOTAL)
 -    MESSAGE(STATUS "Disable EU total query support")
+-  ENDIF(HAVE_DRM_INTEL_EU_TOTAL)
+-  CHECK_LIBRARY_EXISTS(drm_intel "drm_intel_get_subslice_total" ${DRM_INTEL_LIBDIR} HAVE_DRM_INTEL_SUBSLICE_TOTAL)
+-  IF(HAVE_DRM_INTEL_SUBSLICE_TOTAL)
+-    MESSAGE(STATUS "Enable subslice total query support")
+-  ELSE(HAVE_DRM_INTEL_SUBSLICE_TOTAL)
 -    MESSAGE(STATUS "Disable subslice total query support")
--  ENDIF(DRM_INTEL_VERSION VERSION_GREATER 2.4.59)
+-  ENDIF(HAVE_DRM_INTEL_SUBSLICE_TOTAL)
+-  CHECK_LIBRARY_EXISTS(drm_intel "drm_intel_get_pooled_eu" "" HAVE_DRM_INTEL_POOLED_EU)
+-  IF(HAVE_DRM_INTEL_POOLED_EU)
+-    MESSAGE(STATUS "Enable pooled eu query support")
+-  ELSE(HAVE_DRM_INTEL_POOLED_EU)
+-    MESSAGE(STATUS "Disable pooled eu query support")
+-  ENDIF(HAVE_DRM_INTEL_POOLED_EU)
+-  CHECK_LIBRARY_EXISTS(drm_intel "drm_intel_get_min_eu_in_pool" "" HAVE_DRM_INTEL_MIN_EU_IN_POOL)
+-  IF(HAVE_DRM_INTEL_MIN_EU_IN_POOL)
+-    MESSAGE(STATUS "Enable min eu in pool query support")
+-  ELSE(HAVE_DRM_INTEL_MIN_EU_IN_POOL)
+-    MESSAGE(STATUS "Disable min eu in pool query support")
+-  ENDIF(HAVE_DRM_INTEL_MIN_EU_IN_POOL)
 -ELSE(DRM_INTEL_FOUND)
 -  MESSAGE(FATAL_ERROR "Looking for DRM Intel (>= 2.4.52) - not found")
 -ENDIF(DRM_INTEL_FOUND)
@@ -45,20 +60,11 @@ index 0af63c1..bb3bb74 100644
 -IF(CMRT_FOUND)
 -INCLUDE_DIRECTORIES(${CMRT_INCLUDE_DIRS})
 -ENDIF(CMRT_FOUND)
--
+ 
  # Threads
  Find_Package(Threads)
  
 -IF(X11_FOUND)
--# OpenGL (not use cmake helper)
--pkg_check_modules(OPENGL gl)
--IF(OPENGL_FOUND)
--  INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIRS})
--  MESSAGE(STATUS "Looking for OpenGL - found at ${OPENGL_PREFIX}")
--ELSE(OPENGL_FOUND)
--  MESSAGE(STATUS "Looking for OpenGL - not found")
--ENDIF(OPENGL_FOUND)
--
 -# Xext
 -pkg_check_modules(XEXT REQUIRED xext)
 -IF(XEXT_FOUND)
@@ -78,19 +84,36 @@ index 0af63c1..bb3bb74 100644
 -ENDIF(XFIXES_FOUND)
 -ENDIF(X11_FOUND)
 -
- pkg_check_modules(EGL egl)
- IF(EGL_FOUND)
-   MESSAGE(STATUS "Looking for EGL - found at ${EGL_PREFIX}")
-@@ -260,13 +191,6 @@ ENDIF(BUILD_EXAMPLES)
+-OPTION(ENABLE_GL_SHARING "cl_khr_gl_sharing" OFF)
+-
+-IF(ENABLE_GL_SHARING)
+-  pkg_check_modules(OPENGL REQUIRED gl)
+-  IF(OPENGL_FOUND)
+-    MESSAGE(STATUS "Looking for OpenGL - found at ${OPENGL_PREFIX}")
+-  ELSE(OPENGL_FOUND)
+-    MESSAGE(STATUS "Looking for OpenGL - not found")
+-  ENDIF(OPENGL_FOUND)
+-  pkg_check_modules(EGL REQUIRED egl>=11.0.0)
+-  IF(EGL_FOUND)
+-    MESSAGE(STATUS "Looking for EGL - found at ${EGL_PREFIX}")
+-  ELSE(EGL_FOUND)
+-    MESSAGE(STATUS "Looking for EGL - not found")
+-  ENDIF(EGL_FOUND)
+-ENDIF(ENABLE_GL_SHARING)
+-
+ Find_Package(OCLIcd)
+ IF(OCLIcd_FOUND)
+   MESSAGE(STATUS "Looking for OCL ICD header file - found")
+@@ -268,13 +178,6 @@ ENDIF(BUILD_EXAMPLES)
  
  ADD_SUBDIRECTORY(include)
  ADD_SUBDIRECTORY(backend)
 -ADD_SUBDIRECTORY(src)
--ADD_SUBDIRECTORY(utests)
+-ADD_SUBDIRECTORY(utests EXCLUDE_FROM_ALL)
 -
 -# compile benchmark only if standalone compiler is not provided
 -IF (NOT (USE_STANDALONE_GBE_COMPILER STREQUAL "true"))
--ADD_SUBDIRECTORY(benchmark)
+-  ADD_SUBDIRECTORY(benchmark EXCLUDE_FROM_ALL)
 -ENDIF (NOT (USE_STANDALONE_GBE_COMPILER STREQUAL "true"))
  
  IF(BUILD_EXAMPLES)

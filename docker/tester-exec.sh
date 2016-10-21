@@ -79,9 +79,9 @@ testimg() {
     set -e
   fi
 
-  if [ -v TEST_DEVICE ]; then
+  if [ ! -z ${TEST_DEVICE+x} ]; then
     DEVICE="$TEST_DEVICE"
-  elif [ -v JOB_NAME ]; then
+  elif [ ! -z ${JOB_NAME+x} ]; then
     DEVICE=`echo ${JOB_NAME} | awk -F'_' '{print $2}'`
   else
     DEVICE="unconfigured"

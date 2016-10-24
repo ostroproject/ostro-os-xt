@@ -18,7 +18,7 @@ create_remote_dirs () {
         pushd $tmp_dir
         echo "on base: ${_base} create dir: ${_dir}"
         mkdir -p ${_dir}
-        rsync -aE --ignore-existing --chmod=D755 ./ ${_base}/
+        rsync -a --ignore-existing --chmod=D755 ./ ${_base}/
         popd
         rm -fr $tmp_dir
 }
@@ -40,7 +40,7 @@ create_swupd_links () {
   # add number link and version link which points to version/ under 'latest'
   ln -vsf ../../../../../builds/${JOB_NAME}/${CI_BUILD_ID}/swupd/${TARGET_MACHINE}/${_stream}/${_version} $_updir/$_version
   ln -vsf ../../../../../builds/${JOB_NAME}/latest/swupd/${TARGET_MACHINE}/${_stream}/version $_updir/version
-  rsync -aE --ignore-existing --chmod=D755 ./ ${_RSYNC_DEST_UPD}
+  rsync -a --ignore-existing --chmod=D755 ./ ${_RSYNC_DEST_UPD}
   popd
   rm -fr $tmp_dir
 }
@@ -61,10 +61,10 @@ _DEPL=${_BRESULT}/deploy
 
 # create publishing destination structure and copy
 create_remote_dirs ${RSYNC_PUBLISH_DIR}/builds ${JOB_NAME}/${CI_BUILD_ID}
-[ -d ${_DEPL}/images ] && create_remote_dirs ${_RSYNC_DEST} images && rsync --stats -aES --exclude=README_-_DO_NOT_DELETE_FILES_IN_THIS_DIRECTORY.txt ${_DEPL}/images/${TARGET_MACHINE} ${_RSYNC_DEST}/images/
-[ -d ${_DEPL}/licenses ] && create_remote_dirs ${_RSYNC_DEST} licenses && rsync --stats -aE --ignore-existing ${_DEPL}/licenses ${_RSYNC_DEST}/
-[ -d ${_DEPL}/sources ] && create_remote_dirs ${_RSYNC_DEST} sources && rsync --stats -aE --ignore-existing ${_DEPL}/sources ${_RSYNC_DEST}/
-[ -d ${_DEPL}/tools ] && create_remote_dirs ${_RSYNC_DEST} tools && rsync --stats -aE --ignore-existing ${_DEPL}/tools ${_RSYNC_DEST}/
+[ -d ${_DEPL}/images ] && create_remote_dirs ${_RSYNC_DEST} images && rsync --stats -aS --exclude=README_-_DO_NOT_DELETE_FILES_IN_THIS_DIRECTORY.txt ${_DEPL}/images/${TARGET_MACHINE} ${_RSYNC_DEST}/images/
+[ -d ${_DEPL}/licenses ] && create_remote_dirs ${_RSYNC_DEST} licenses && rsync --stats -a --ignore-existing ${_DEPL}/licenses ${_RSYNC_DEST}/
+[ -d ${_DEPL}/sources ] && create_remote_dirs ${_RSYNC_DEST} sources && rsync --stats -a --ignore-existing ${_DEPL}/sources ${_RSYNC_DEST}/
+[ -d ${_DEPL}/tools ] && create_remote_dirs ${_RSYNC_DEST} tools && rsync --stats -a --ignore-existing ${_DEPL}/tools ${_RSYNC_DEST}/
 
 # If produced, publish swupd repo to build directory.
 # It will be published to real update location during build finalize steps
@@ -75,9 +75,9 @@ if [ -d ${_DEPL}/swupd/${TARGET_MACHINE} ]; then
         i_name=`basename $i_dir`
         # pre-create destination directories
         mkdir -p .swupd/swupd/${TARGET_MACHINE}/$i_name
-        rsync --stats -aE --ignore-existing .swupd/swupd ${_RSYNC_DEST}/
+        rsync --stats -a --ignore-existing .swupd/swupd ${_RSYNC_DEST}/
         rm -rf .swupd
-        rsync --stats -aE $s_dir/* ${_RSYNC_DEST}/swupd/${TARGET_MACHINE}/$i_name/
+        rsync --stats -a $s_dir/* ${_RSYNC_DEST}/swupd/${TARGET_MACHINE}/$i_name/
         if [ "$_jobtype" = "master" ]; then
             create_swupd_links $s_dir $i_dir $i_name
         fi
@@ -90,26 +90,26 @@ if [ -d ${_DEPL}/sdk ]; then
     ${WORKSPACE}/${BASE_DISTRO}/scripts/oe-publish-sdk ${_DEPL}/sdk/*-toolchain-ext*.sh ${_DEPL}/sdk-data/${TARGET_MACHINE}/
     # publish installer as .sh file to sdk/ and all of sdk-data/
     create_remote_dirs ${_RSYNC_DEST} sdk/${TARGET_MACHINE}
-    rsync --stats -aE ${_DEPL}/sdk/*.sh ${_RSYNC_DEST}/sdk/${TARGET_MACHINE}/
+    rsync --stats -a ${_DEPL}/sdk/*.sh ${_RSYNC_DEST}/sdk/${TARGET_MACHINE}/
 fi
 if [ -d ${_DEPL}/sdk-data/${TARGET_MACHINE} ]; then
     create_remote_dirs ${_RSYNC_DEST} sdk-data
-    rsync --stats -aE ${_DEPL}/sdk-data/${TARGET_MACHINE} ${_RSYNC_DEST}/sdk-data/
+    rsync --stats -a ${_DEPL}/sdk-data/${TARGET_MACHINE} ${_RSYNC_DEST}/sdk-data/
 fi
 if [ -d ${_DEPL}/testsuite ]; then
     create_remote_dirs ${_RSYNC_DEST} testsuite/${TARGET_MACHINE}
-    rsync --stats -aE ${_DEPL}/testsuite/* ${_RSYNC_DEST}/testsuite/${TARGET_MACHINE}/
+    rsync --stats -a ${_DEPL}/testsuite/* ${_RSYNC_DEST}/testsuite/${TARGET_MACHINE}/
 fi
 # publish isafw reports
 if [ -n "$(find ${_BRESULT}/log -maxdepth 1 -name 'isafw*' -print -quit)" ]; then
     create_remote_dirs ${_RSYNC_DEST} isafw/${TARGET_MACHINE}/
-    rsync --stats -aE ${_BRESULT}/log/isafw-report*/* ${_RSYNC_DEST}/isafw/${TARGET_MACHINE}/ --exclude internal
+    rsync --stats -a ${_BRESULT}/log/isafw-report*/* ${_RSYNC_DEST}/isafw/${TARGET_MACHINE}/ --exclude internal
 fi
 
 LOG="$WORKSPACE/bitbake-${TARGET_MACHINE}-${CI_BUILD_ID}.log"
 if [ -f "${LOG}" ]; then
     xz -v -k ${LOG}
-    rsync --stats -azE ${LOG}* ${_RSYNC_DEST}/
+    rsync --stats -az ${LOG}* ${_RSYNC_DEST}/
 fi
 
 if [ -d sstate-cache ]; then
@@ -118,7 +118,7 @@ if [ -d sstate-cache ]; then
       # populate shared sstate from local sstate:
       _src=sstate-cache
       _dst=${RSYNC_PUBLISH_DIR}/bb-cache/sstate
-      find ${_src} -mindepth 1 -maxdepth 1 -type d -exec rsync --stats -aE --ignore-existing {} ${_dst}/ \;
+      find ${_src} -mindepth 1 -maxdepth 1 -type d -exec rsync --stats -a --ignore-existing {} ${_dst}/ \;
     fi
   fi
 fi
@@ -126,11 +126,11 @@ fi
 ## for debugging signatures: publish stamps
 if [ -d ${_BRESULT}/stamps ]; then
     create_remote_dirs ${_RSYNC_DEST} .stamps/${TARGET_MACHINE}/
-    rsync --stats -aE ${_BRESULT}/stamps/* ${_RSYNC_DEST}/.stamps/${TARGET_MACHINE}/
+    rsync --stats -a ${_BRESULT}/stamps/* ${_RSYNC_DEST}/.stamps/${TARGET_MACHINE}/
 fi
 if [ -d ${_BRESULT}/buildstats ]; then
     create_remote_dirs ${_RSYNC_DEST} .buildstats/${TARGET_MACHINE}
-    rsync --stats -aE ${_BRESULT}/buildstats/* ${_RSYNC_DEST}/.buildstats/${TARGET_MACHINE}/
+    rsync --stats -a ${_BRESULT}/buildstats/* ${_RSYNC_DEST}/.buildstats/${TARGET_MACHINE}/
 fi
 # Copy detailed build logs
 create_remote_dirs ${_RSYNC_DEST} detailed-logs/${TARGET_MACHINE}/

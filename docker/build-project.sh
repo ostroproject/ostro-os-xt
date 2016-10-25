@@ -86,7 +86,7 @@ else
   echo "SSTATE_DIR = \"${BUILD_CACHE_DIR}/sstate\"" >> conf/auto.conf
 fi
 export BUILD_ID=${CI_BUILD_ID}
-export BB_ENV_EXTRAWHITE="$BB_ENV_EXTRAWHITE BUILD_ID"
+export BB_ENV_EXTRAWHITE="$BB_ENV_EXTRAWHITE BUILD_ID GIT_COMMITTER_NAME GIT_COMMITTER_EMAIL"
 
 if [ -z "$BUILD_TARGET" ]; then
   # Let's try to fetch build targets from configuration files

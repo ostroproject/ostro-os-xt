@@ -1,0 +1,62 @@
+From 6fd469063b7515dae4ee845775b299a2e5c1cf2a Mon Sep 17 00:00:00 2001
+From: Andy Ross <andrew.j.ross@intel.com>
+Date: Mon, 9 Nov 2015 14:58:17 -0800
+Subject: [PATCH] x86: early_printk: Allow for skipping PCI class check
+
+Some PCI UART devices have nonstandard class codes, but still want to
+be used as a boot console.  Allow for skipping the class check on such
+platforms when you know that the passed device is correct.
+
+---
+ arch/x86/kernel/early_printk.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/kernel/early_printk.c b/arch/x86/kernel/early_printk.c
+index 21bf924..27ae392 100644
+--- a/arch/x86/kernel/early_printk.c
++++ b/arch/x86/kernel/early_printk.c
+@@ -218,7 +218,7 @@ static __init void early_pci_serial_init(char *s)
+ {
+ 	unsigned divisor;
+ 	unsigned long baud = DEFAULT_BAUD;
+-	u8 bus, slot, func;
++	u8 bus, slot, func, classcheck = 1;
+ 	u32 classcode, bar0;
+ 	u16 cmdreg;
+ 	char *e;
+@@ -246,6 +246,15 @@ static __init void early_pci_serial_init(char *s)
+ 	func = (u8)simple_strtoul(s, &e, 16);
+ 	s = e;
+ 
++	/*
++	 * Not all PCI UART devices have sane class codes, so allow a
++	 * "noclasscheck" flag to be prepended to disable the test.
++	 */
++	if (strstarts(s, ",noclasscheck")) {
++		classcheck = 0;
++		s += 13;
++	}
++
+ 	/* A baud might be following */
+ 	if (*s == ',')
+ 		s++;
+@@ -260,10 +269,12 @@ static __init void early_pci_serial_init(char *s)
+ 	/*
+ 	 * Verify it is a UART type device
+ 	 */
+-	if (((classcode >> 16 != PCI_CLASS_COMMUNICATION_MODEM) &&
+-	     (classcode >> 16 != PCI_CLASS_COMMUNICATION_SERIAL)) ||
+-	   (((classcode >> 8) & 0xff) != 0x02)) /* 16550 I/F at BAR0 */
+-		return;
++	if (classcheck) {
++		if (((classcode >> 16 != PCI_CLASS_COMMUNICATION_MODEM) &&
++		     (classcode >> 16 != PCI_CLASS_COMMUNICATION_SERIAL)) ||
++		    (((classcode >> 8) & 0xff) != 0x02)) /* 16550 I/F at BAR0 */
++			return;
++	}
+ 
+ 	/*
+ 	 * Determine if it is IO or memory mapped
+-- 
+1.9.1
+

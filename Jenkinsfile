@@ -45,8 +45,11 @@ try {
             }
 
             stage('Checkout own content') {
-                if (binding.variables.get("GITHUB_PR_NUMBER")) {
+                //if (binding.variables.get("GITHUB_PR_NUMBER")) {
+                // we can't use binding method any more, rely on is_pr
+                if (is_pr) {
                     // we are building pull request
+                    echo "Checkout: checkout in PR case"
                     checkout([$class: 'GitSCM',
                         branches: [
                             [name: "origin-pull/$GITHUB_PR_NUMBER/$GITHUB_PR_COND_REF"]
@@ -71,6 +74,7 @@ try {
                         ]
                     ])
                 } else {
+                    echo "Checkout: checkout in MASTER case"
                     checkout poll: false, scm: scm
                 }
             }

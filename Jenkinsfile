@@ -45,8 +45,11 @@ try {
             }
 
             stage('Checkout own content') {
-                if (binding.variables.get("GITHUB_PR_NUMBER")) {
+                //if (binding.variables.get("GITHUB_PR_NUMBER")) {
+                // we can't use binding method any more, rely on is_pr
+                if (is_pr) {
                     // we are building pull request
+                    echo "Checkout: checkout in PR case"
                     checkout([$class: 'GitSCM',
                         branches: [
                             [name: "origin-pull/$GITHUB_PR_NUMBER/$GITHUB_PR_COND_REF"]
@@ -71,6 +74,7 @@ try {
                         ]
                     ])
                 } else {
+                    echo "Checkout: checkout in MASTER case"
                     checkout poll: false, scm: scm
                 }
             }
@@ -147,19 +151,23 @@ try {
                 writeFile file: 'testinfo.csv', text: testinfo_data
 
                 def ci_build_id = "${env.BUILD_TIMESTAMP}-build-${env.BUILD_NUMBER}"
-                withEnv(["CI_BUILD_ID=${ci_build_id}",
-                         "CI_BUILD_URL=${env.COORD_BASE_URL}/builds/${env.JOB_NAME}/${ci_build_id}",
-                         "MACHINE=${target_machine}",
-                         "TEST_DEVICE=${test_device}" ]){
-                    sh 'env && chmod a+x tester-exec.sh && ./tester-exec.sh'
+                try {
+                    withEnv(["CI_BUILD_ID=${ci_build_id}",
+                             "CI_BUILD_URL=${env.COORD_BASE_URL}/builds/${env.JOB_NAME}/${ci_build_id}",
+                             "MACHINE=${target_machine}",
+                             "TEST_DEVICE=${test_device}" ]){
+                        sh 'env && chmod a+x tester-exec.sh && ./tester-exec.sh'
+                    }
+                } catch (Exception e) {
+                    throw e
+                } finally {
+                    sh "sed -e 's/name=\"oeqa/name=\"${test_device}.oeqa/g' -i TEST-*.xml"
+                    sh "rename TEST- TEST-${test_device}- TEST-*.xml"
+                    sh "rename aft- aft-${test_device} aft-*"
+                    sh "rename .log .${test_device}.log *.log"
+
+                    archive '**/*.log, **/*.xml, **/aft-results-*.tar.bz2'
                 }
-
-                sh "sed -e 's/name=\"oeqa/name=\"${test_device}.oeqa/g' -i TEST-*.xml"
-                sh "rename TEST- TEST-${test_device}- TEST-*.xml"
-                sh "rename aft- aft-${test_device} aft-*"
-                sh "rename .log .${test_device}.log *.log"
-
-                archive '**/*.log, **/*.xml, **/aft-results-*.tar.bz2'
 
                 step([$class: 'XUnitPublisher',
                     testTimeMargin: '3000',

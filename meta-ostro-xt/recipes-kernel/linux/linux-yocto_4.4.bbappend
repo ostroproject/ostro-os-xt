@@ -33,3 +33,6 @@ SRC_URI_remove = " \
     file://0001-iio-tmp006-Set-correct-iio-name.patch \
     file://0001-iio-si7020-Set-correct-iio-name.patch \
 "
+
+# Explicitly enable TPM support
+SRC_URI_append = " file://security-tpm.cfg"

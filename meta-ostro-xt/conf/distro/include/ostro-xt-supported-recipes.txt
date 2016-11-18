@@ -34,9 +34,10 @@ glib-networking@core
 glmark2@openembedded-layer
 glproto@core
 gnome-themes-standard@core
-gstreamer-vaapi-1.0@intel
+gstreamer-vaapi-1.0@ostro-xt
 gstreamer1.0-plugins-base@core
 gstreamer1.0-plugins-good@core
+gstreamer1.0-plugins-bad@core
 gstreamer1.0@core
 gtest@openembedded-layer
 gtk-xfce-engine@xfce-layer

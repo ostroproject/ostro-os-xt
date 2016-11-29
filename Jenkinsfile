@@ -174,8 +174,8 @@ try {
                     thresholdMode: 1,
                     thresholds: [
                         [$class: 'FailedThreshold',
-                            failureNewThreshold: '3',
-                            failureThreshold: '15',
+                            failureNewThreshold: '0',
+                            failureThreshold: '0',
                             unstableNewThreshold: '99999',
                             unstableThreshold: '99999'],
                         [$class: 'SkippedThreshold',

@@ -1,5 +1,5 @@
 # This value must match the value of LAYER_CONF_VERSION in meta-ostro-xt/conf/layer.conf.
-LCONF_VERSION = "903"
+LCONF_VERSION = "904"
 
 BBPATH = "${TOPDIR}"
 BBFILES ?= ""
@@ -8,6 +8,7 @@ OSTRO_XT_LAYERS = " \
   ##OEROOT##/../meta-ostro-xt \
   ##OEROOT##/../meta-clang \
   ##OEROOT##/../meta-intel-realsense \
+  ##OEROOT##/../meta-crosswalk \
   "
 
 # Base version from ostro-os: LCONF_VERSION=9

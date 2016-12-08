@@ -9,3 +9,7 @@
 [submodule "meta-intel-realsense"]
 	path = meta-intel-realsense
 	url = https://github.com/IntelRealSense/meta-intel-realsense
+[submodule "meta-crosswalk"]
+	path = meta-crosswalk
+	url = https://github.com/crosswalk-project/meta-crosswalk.git
+	branch = master

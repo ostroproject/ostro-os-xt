@@ -62,6 +62,15 @@ elif [ -f $WORKSPACE/$BASE_DISTRO/meta-*/conf/distro/include/ostroproject-ci.inc
   cat $WORKSPACE/$BASE_DISTRO/meta-*/conf/distro/include/ostroproject-ci.inc > conf/auto.conf
 fi
 
+if [ ! -z ${CI_ARCHIVER_MODE+x} ]; then
+cat >> conf/auto.conf << EOF
+INHERIT += "archiver"
+ARCHIVER_MODE[src] = "original"
+ARCHIVER_MODE[diff] = "1"
+ARCHIVER_MODE[recipe] = "1"
+EOF
+fi
+
 cat >> conf/auto.conf << EOF
 MACHINE = "$TARGET_MACHINE"
 EOF

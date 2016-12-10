@@ -17,6 +17,8 @@ damageproto@core
 dmxproto@core
 dosfstools@core
 dri2proto@core
+dri3proto@core
+libxshmfence@core
 encodings@core
 exo@xfce-layer
 expect@core

@@ -1,0 +1,67 @@
+From 8968d9311f2c2ebf456aba0180f44364c2129848 Mon Sep 17 00:00:00 2001
+From: Ilkka Koskinen <ilkka.koskinen@intel.com>
+Date: Tue, 15 Nov 2016 09:02:52 -0800
+Subject: [PATCH] [DO NOT MERGE] intel_pmc_ipc: Debug messages to see when ipc
+ calls are sent first time
+
+---
+ drivers/platform/x86/intel_pmc_ipc.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/drivers/platform/x86/intel_pmc_ipc.c b/drivers/platform/x86/intel_pmc_ipc.c
+index 6f497e8..cd92364 100644
+--- a/drivers/platform/x86/intel_pmc_ipc.c
++++ b/drivers/platform/x86/intel_pmc_ipc.c
+@@ -238,13 +238,23 @@ int intel_pmc_ipc_simple_command(int cmd, int sub)
+ {
+ 	int ret;
+ 
++	static int dbgprint = 0;
++	if (!dbgprint)
++		printk(KERN_ERR "DEBUG: %s(%d)\n", __func__, __LINE__);
++
+ 	mutex_lock(&ipclock);
+ 	if (ipcdev.dev == NULL) {
++		if (!dbgprint)
++			printk(KERN_ERR "DEBUG: %s(%d)\n", __func__, __LINE__);
+ 		mutex_unlock(&ipclock);
+ 		return -ENODEV;
+ 	}
+ 	ipc_send_command(sub << IPC_CMD_SUBCMD | cmd);
+ 	ret = intel_pmc_ipc_check_status();
++	if (!dbgprint) {
++		printk(KERN_ERR "DEBUG: %s(%d)\n", __func__, __LINE__);
++		dbgprint++;
++	}
+ 	mutex_unlock(&ipclock);
+ 
+ 	return ret;
+@@ -272,10 +282,14 @@ int intel_pmc_ipc_raw_cmd(u32 cmd, u32 sub, u8 *in, u32 inlen, u32 *out,
+ 	u32 wbuf[4] = { 0 };
+ 	int ret;
+ 	int i;
++	static int dbgprint = 0;
+ 
+ 	if (inlen > IPC_DATA_BUFFER_SIZE || outlen > IPC_DATA_BUFFER_SIZE / 4)
+ 		return -EINVAL;
+ 
++	if (!dbgprint)
++		printk(KERN_ERR "DEBUG: %s(%d)\n", __func__, __LINE__);
++
+ 	mutex_lock(&ipclock);
+ 	if (ipcdev.dev == NULL) {
+ 		mutex_unlock(&ipclock);
+@@ -295,6 +309,10 @@ int intel_pmc_ipc_raw_cmd(u32 cmd, u32 sub, u8 *in, u32 inlen, u32 *out,
+ 		for (i = 0; i < outlen; i++)
+ 			*out++ = ipc_data_readl(4 * i);
+ 	}
++	if (!dbgprint) {
++		printk(KERN_ERR "DEBUG: %s(%d)\n", __func__, __LINE__);
++		dbgprint++;
++	}
+ 	mutex_unlock(&ipclock);
+ 
+ 	return ret;
+-- 
+2.7.4
+

@@ -1,0 +1,41 @@
+From d8a4e34557d151b1036adaa0f14f041c07b0d133 Mon Sep 17 00:00:00 2001
+From: Fei Yang <fei.yang@intel.com>
+Date: Mon, 31 Oct 2016 12:46:58 -0700
+Subject: [PATCH] DBG: remove ttyS2 for BXT
+
+Signed-off-by: Fei Yang <fei.yang@intel.com>
+---
+ drivers/mfd/intel-lpss-pci.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
+index a19e571..7b892c4 100644
+--- a/drivers/mfd/intel-lpss-pci.c
++++ b/drivers/mfd/intel-lpss-pci.c
+@@ -135,7 +135,6 @@ static const struct pci_device_id intel_lpss_pci_ids[] = {
+ 	{ PCI_VDEVICE(INTEL, 0x0aba), (kernel_ulong_t)&bxt_i2c_info },
+ 	{ PCI_VDEVICE(INTEL, 0x0abc), (kernel_ulong_t)&bxt_uart_info },
+ 	{ PCI_VDEVICE(INTEL, 0x0abe), (kernel_ulong_t)&bxt_uart_info },
+-	{ PCI_VDEVICE(INTEL, 0x0ac0), (kernel_ulong_t)&bxt_uart_info },
+ 	{ PCI_VDEVICE(INTEL, 0x0ac2), (kernel_ulong_t)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0x0ac4), (kernel_ulong_t)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0x0ac6), (kernel_ulong_t)&bxt_info },
+@@ -151,7 +150,6 @@ static const struct pci_device_id intel_lpss_pci_ids[] = {
+ 	{ PCI_VDEVICE(INTEL, 0x1aba), (kernel_ulong_t)&bxt_i2c_info },
+ 	{ PCI_VDEVICE(INTEL, 0x1abc), (kernel_ulong_t)&bxt_uart_info },
+ 	{ PCI_VDEVICE(INTEL, 0x1abe), (kernel_ulong_t)&bxt_uart_info },
+-	{ PCI_VDEVICE(INTEL, 0x1ac0), (kernel_ulong_t)&bxt_uart_info },
+ 	{ PCI_VDEVICE(INTEL, 0x1ac2), (kernel_ulong_t)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0x1ac4), (kernel_ulong_t)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0x1ac6), (kernel_ulong_t)&bxt_info },
+@@ -168,7 +166,6 @@ static const struct pci_device_id intel_lpss_pci_ids[] = {
+ 	{ PCI_VDEVICE(INTEL, 0x5aba), (kernel_ulong_t)&bxt_i2c_info },
+ 	{ PCI_VDEVICE(INTEL, 0x5abc), (kernel_ulong_t)&bxt_uart_info },
+ 	{ PCI_VDEVICE(INTEL, 0x5abe), (kernel_ulong_t)&bxt_uart_info },
+-	{ PCI_VDEVICE(INTEL, 0x5ac0), (kernel_ulong_t)&bxt_uart_info },
+ 	{ PCI_VDEVICE(INTEL, 0x5ac2), (kernel_ulong_t)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0x5ac4), (kernel_ulong_t)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0x5ac6), (kernel_ulong_t)&bxt_info },
+-- 
+1.9.1
+

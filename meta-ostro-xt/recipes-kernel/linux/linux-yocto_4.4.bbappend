@@ -2,6 +2,10 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 SRC_URI_prepend_intel-corei7-64 = "file://fix_branch.scc "
 SRC_URI_append_intel-corei7-64 = " file://disable-iwlwifi-upstream.cfg"
+SRC_URI_append_intel-corei7-64 = " file://debug-kernel.cfg"
+SRC_URI_append_intel-corei7-64 = " file://0001-x86-early_printk-Allow-for-skipping-PCI-class-check.patch"
+#SRC_URI_append_intel-corei7-64 = " file://0001-DO-NOT-MERGE-intel_pmc_ipc-Debug-messages-to-see-whe.patch"
+#SRC_URI_append_intel-corei7-64 = " file://0001-DBG-remove-ttyS2-for-BXT.patch"
 
 LINUX_VERSION_INTEL_COMMON_forcevariable = "4.4.32"
 KBRANCH_corei7-64-intel-common_forcevariable = "standard/intel/bxt-rebase;rebaseable=1"
@@ -24,6 +28,9 @@ KERNEL_FEATURES_remove_corei7-64-intel-common = "features/amt/mei/mei.scc"
 
 # Non-standard feature which should only be enabled on platforms which need it.
 KERNEL_FEATURES_append_corei7-64-intel-common = " features/mei/mei-spd.scc"
+
+# deploy vmlinux
+KERNEL_ALT_IMAGETYPE = "vmlinux"
 
 # Removal will also happen in meta-ostro-bsp
 # (https://github.com/ostroproject/meta-ostro-bsp/pull/57) but for now

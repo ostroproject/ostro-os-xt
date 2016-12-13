@@ -45,7 +45,6 @@ OSTRO_VM_IMAGE_TYPES = "dsk.xz dsk.ova dsk.bmap dsk.xz.sha256sum"
 OSTROPROJECT_CI_BUILD_TARGETS=" \
   ostro-xt-image-noswupd \
   ostro-xt-image-noswupd-benchmark-qa \
-  ostro-xt-image-swupd \
 "
 
 # Following targets will be executed with do_populate_sdk
@@ -61,14 +60,14 @@ OSTROPROJECT_CI_ESDK_TARGETS="${OSTROPROJECT_CI_SDK_TARGETS}"
 SDKIMAGE_FEATURES_remove = "dbg-pkgs"
 
 # Target(s) for the task "do_test_iot_export":
-OSTROPROJECT_CI_TEST_EXPORT_TARGETS="ostro-xt-image-swupd"
+OSTROPROJECT_CI_TEST_EXPORT_TARGETS="ostro-xt-image-noswupd"
 
 # Automatic tests. Entries are separated by spaces.
 # Each entry is a tuple, in the format:
 # <image_name>,<testsuite_name>,<testfiles_name>,$MACHINE
 
 OSTROPROJECT_CI_TEST_RUNS=" \
-  ostro-xt-image-swupd,iot-testsuite.tar.gz,iot-testfiles.${MACHINE}.tar.gz,${MACHINE} \
+  ostro-xt-image-noswupd,iot-testsuite.tar.gz,iot-testfiles.${MACHINE}.tar.gz,${MACHINE} \
 "
 
 # In the CI system, the integer OS version used for swupd is

@@ -16,7 +16,7 @@ do_install_append () {
     install -m 0755 -d ${D}/${base_libdir}/udev/rules.d
     install -m 0644 ${WORKDIR}/hdmi-hotplug.rules ${D}/${base_libdir}/udev/rules.d/79-hdmi-hotplug.rules
     install -m 0644 ${WORKDIR}/pci-power.rules ${D}/${base_libdir}/udev/rules.d/80-pci-power.rules
-    install -m 0644 ${WORKDIR}/usb-power.rules ${D}/${base_libdir}/udev/rules.d/80-usb-power.rules
+    #install -m 0644 ${WORKDIR}/usb-power.rules ${D}/${base_libdir}/udev/rules.d/80-usb-power.rules
     install -m 0644 ${WORKDIR}/usb-autosuspend-blacklist ${D}/${base_libdir}/udev/
 }
 

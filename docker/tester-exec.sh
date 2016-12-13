@@ -54,6 +54,7 @@ testimg() {
   else
     FN_BASE=${_IMG_NAME_MACHINE}-${CI_BUILD_ID}
     FILENAME=${FN_BASE}.dsk
+    FILENAME_BMAP=${FILENAME}.bmap
     FILENAME_XZ=${FILENAME}.xz
     FILENAME_ZIP=${FILENAME}.zip
 
@@ -62,6 +63,8 @@ testimg() {
     rm -f ${FILENAME_XZ} ${FILENAME_ZIP}
     TEST_IMG_URL=${DIR_FULL_URL}/images/${MACHINE}/${FILENAME_XZ}
     wget ${_WGET_OPTS} ${TEST_IMG_URL}
+    TEST_IMG_BMAP_URL=${DIR_FULL_URL}/images/${MACHINE}/${FILENAME_BMAP}
+    wget ${_WGET_OPTS} ${TEST_IMG_BMAP_URL}
     if [ -f ${FILENAME_XZ} ]; then
       echo "Extracting ${FILENAME_XZ}"
       unxz -d ${FILENAME_XZ}

@@ -5,6 +5,8 @@ SRC_URI_append = " \
     file://efi-combo-trigger.service.new \
     file://ostroprojectorg.key \
 "
+SWUPD_VERSION_URL ?= "https://download.ostroproject.org/updates/ostro-os-xt/milestone/intel-corei7-64/ostro-xt-image-swupd"
+SWUPD_CONTENT_URL ?= "https://download.ostroproject.org/updates/ostro-os-xt/milestone/intel-corei7-64/ostro-xt-image-swupd"
 
 do_install_append () {
     rm -rf ${D}/usr/bin/efi_combo_updater

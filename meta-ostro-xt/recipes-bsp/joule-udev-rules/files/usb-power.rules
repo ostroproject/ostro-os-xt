@@ -9,7 +9,7 @@
 ACTION=="add", SUBSYSTEMS=="usb", PROGRAM="/bin/sh -c 'grep -q ^$attr{idVendor}:$attr{idProduct} /lib/udev/usb-autosuspend-blacklist || ( [ -e /etc/udev/usb-autosuspend-blacklist ] && grep -q $attr{idVendor}:$attr{idProduct} /etc/udev/usb-autosuspend-blacklist)'", GOTO="power_usb_rules_end"
 
 # Enable autosuspend.
-ACTION=="add", SUBSYSTEMS=="usb", TEST=="power/control", ATTR{power/control}="auto"
+ACTION=="add", SUBSYSTEMS=="usb", ENV{INTERFACE}!="3/*, TEST=="power/control", ATTR{power/control}="auto"
 
 # Done.
 LABEL="power_usb_rules_end"

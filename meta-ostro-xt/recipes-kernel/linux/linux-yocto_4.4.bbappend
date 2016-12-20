@@ -7,7 +7,7 @@ SRC_URI_append_intel-corei7-64 = " file://bxt-audio.cfg"
 LINUX_VERSION_INTEL_COMMON_forcevariable = "4.4.36"
 KBRANCH_corei7-64-intel-common_forcevariable = "standard/intel/bxt-rebase;rebaseable=1"
 # http://git.yoctoproject.org/cgit/cgit.cgi/linux-yocto-4.4/log/?h=standard/intel/bxt-rebase
-SRCREV_machine_corei7-64-intel-common = "5ec33015d3f01a8059f16715dd5bb34fac24c50c"
+SRCREV_machine_corei7-64-intel-common = "355804c5ad06a7473f5789bf82695e6acc3533b8"
 # http://git.yoctoproject.org/cgit/cgit.cgi/yocto-kernel-cache/log/?h=yocto-4.4
 SRCREV_meta_corei7-64-intel-common = "b846fc6436aa5d4c747d620e83dfda969854d10c"
 

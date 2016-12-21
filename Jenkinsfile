@@ -106,7 +106,7 @@ try {
                 export CI_BUILD_ID=${env.BUILD_TIMESTAMP}-build-${env.BUILD_NUMBER}
                 export TARGET_MACHINE=${target_machine}
                 export GIT_COMMITTER_NAME="Ostro Project CI"
-                export GIT_COMMITTER_EMAIL='ci@ostroproject.org'
+                export EMAIL='ci@ostroproject.org'
             """
             timestamps {
             sshagent(['github-auth-ssh']) {

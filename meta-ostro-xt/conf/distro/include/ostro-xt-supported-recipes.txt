@@ -58,6 +58,7 @@ iso-codes@core
 kbproto@core
 libaio@core
 libatasmart@openembedded-layer
+libbsd@core
 libdaemon@core
 libdmx@core
 libdrm@core
@@ -122,6 +123,8 @@ libxvmc@core
 libxxf86dga@core
 libxxf86misc@core
 libxxf86vm@core
+libyami-utils@ostro-xt
+libyami@ostro-xt
 lmbench@openembedded-layer
 log4cxx@realsense
 ltp@core
